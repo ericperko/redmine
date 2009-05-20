@@ -206,6 +206,14 @@ class ApplicationHelperTest < HelperTestCase
       # project does not exist
       '[[unknowproject:Start]]' => '[[unknowproject:Start]]',
       '[[unknowproject:Start|Page title]]' => '[[unknowproject:Start|Page title]]',
+      # categories
+      '[[category:Test]]' => '<a href="/projects/ecookbook/wiki/category/Test">Test</a>',
+      '[[category:Test|Text]]' => '<a href="/projects/ecookbook/wiki/category/Test">Text</a>',
+      '[[ecookbook:category:Test]]' => '<a href="/projects/ecookbook/wiki/category/Test">Test</a>',
+      '[[ecookbook:category:Test|Text]]' => '<a href="/projects/ecookbook/wiki/category/Test">Text</a>',
+      '[[unknownproject:category:Test]]' => '[[unknownproject:category:Test]]',
+      '[[unknownproject:category:Test|Text]]' => '[[unknownproject:category:Test|Text]]',
+      '![[category:Test]]' => '[[category:Test]]',
     }
     @project = Project.find(1)
     to_test.each { |text, result| assert_equal "<p>#{result}</p>", textilizable(text) }

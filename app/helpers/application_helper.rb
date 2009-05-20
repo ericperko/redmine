@@ -371,6 +371,32 @@ module ApplicationHelper
 
     project = options[:project] || @project || (obj && obj.respond_to?(:project) ? obj.project : nil)
 
+    # Wiki category links
+    #
+    # Examples:
+    #   [[category:mycategory]]
+    #   [[category:mycategory|mytext]]
+    # wiki links can refer other project wikis, using project name or identifier:
+    #   [[myproject:category:mycategory]]
+    #   [[myproject:category:mycategory|mytext]]
+    text = text.gsub(/(!)?(\[\[(?:(.+?):)?category:(.+?)(?:\|(.+?))?\]\])/) do |m|
+      esc, all, link_project, category, title = $1, $2, $3, $4, $5
+      if esc.nil?
+        if link_project.nil?
+          link_project = project
+        else
+          link_project = Project.find_by_name(link_project) || Project.find_by_identifier(link_project)
+        end
+        if link_project && link_project.wiki
+          link_to((title || category), :only_path => only_path, :controller => 'wiki', :id => project, :action => 'special', :page => 'category', :category => Wiki.titleize(category))
+        else
+          all
+        end
+      else
+        '!' + all
+      end
+    end
+
     # Wiki links
     #
     # Examples:
