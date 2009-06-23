@@ -41,4 +41,21 @@ class WikiTest < Test::Unit::TestCase
     assert_equal 'Page_title_with_CAPITALES', Wiki.titleize('page title with CAPITALES')
     assert_equal 'テスト', Wiki.titleize('テスト')
   end
+
+  def test_upcase_first
+    assert_equal 'Page title', Wiki.upcase_first('page title')
+    assert_equal 'テスト', Wiki.titleize('テスト')
+  end
+
+  def test_find_categories
+    @wiki = Wiki.find(1)
+    assert_equal ['Examples', 'Documentation'], @wiki.find_all_categories
+  end
+
+  def test_find_pages_in_category
+    @wiki = Wiki.find(1)
+    assert_equal [1], @wiki.find_pages_in_category('Documentation').map {|c| c.id }.sort
+    assert_equal [1, 4, 5, 6], @wiki.find_pages_in_category('Examples').map {|c| c.id }.sort
+    assert_equal [2], @wiki.find_pages_in_category('None').map {|c| c.id }.sort
+  end
 end

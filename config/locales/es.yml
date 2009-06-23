@@ -637,6 +637,11 @@ es:
   label_wiki_edit_plural: Wiki edicciones
   label_wiki_page: Wiki página
   label_wiki_page_plural: Wiki páginas
+  label_wiki_category: Categoría
+  label_wiki_category_plural: Categorías
+  label_index_by_category: Índice por categoría
+  label_special: Especial
+  label_pages_without_category: Páginas sin categoría
   label_workflow: Flujo de trabajo
   label_year: Año
   label_yesterday: ayer

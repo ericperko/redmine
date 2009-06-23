@@ -494,6 +494,11 @@
   label_wiki_edit_plural: Wiki endringer
   label_wiki_page: Wiki-side
   label_wiki_page_plural: Wiki-sider
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_wiki_index_by_category: Index by category
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Indekser etter tittel
   label_index_by_date: Indekser etter dato
   label_current_version: Gjeldende versjon

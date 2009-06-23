@@ -551,6 +551,11 @@ sl:
   label_wiki_edit_plural: Wiki urejanja
   label_wiki_page: Wiki stran
   label_wiki_page_plural: Wiki strani
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_wiki_index_by_category: Index by category
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Razvrsti po naslovu
   label_index_by_date: Razvrsti po datumu
   label_current_version: Trenutna verzija

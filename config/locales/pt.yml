@@ -521,6 +521,11 @@ pt:
   label_wiki_edit_plural: Edições da Wiki
   label_wiki_page: Página da Wiki
   label_wiki_page_plural: Páginas da Wiki
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_wiki_index_by_category: Index by category
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Índice por título
   label_index_by_date: Índice por data
   label_current_version: Versão actual

@@ -298,6 +298,14 @@ class WikiControllerTest < Test::Unit::TestCase
       :controller => 'wiki', :action => 'special', :id => '567', :page => 'date_index'
     )
     assert_routing(
+      {:method => :get, :path => '/projects/567/wiki/category_index'},
+      :controller => 'wiki', :action => 'special', :id => '567', :page => 'category_index'
+    )
+    assert_routing(
+      {:method => :get, :path => '/projects/567/wiki/category/Test'},
+      :controller => 'wiki', :action => 'special', :id => '567', :page => 'category', :category => 'Test'
+    )    
+    assert_routing(
       {:method => :get, :path => '/projects/567/wiki/export'},
       :controller => 'wiki', :action => 'special', :id => '567', :page => 'export'
     )

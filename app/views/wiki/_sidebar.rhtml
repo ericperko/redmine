@@ -3,3 +3,13 @@
 <%= link_to l(:field_start_page), {:action => 'index', :page => nil} %><br />
 <%= link_to l(:label_index_by_title), {:action => 'special', :page => 'Page_index'} %><br />
 <%= link_to l(:label_index_by_date), {:action => 'special', :page => 'Date_index'} %><br />
+<%= link_to l(:label_index_by_category), {:action => 'special', :page => 'Category_index'} %><br />
+
+<% if wiki_categories = @page.categories.sub(/^\|(.*)\|$/, '\1').split('|') rescue nil %>
+  <% if (!wiki_categories.empty?) %>
+    <h3><%= l((wiki_categories.length==1)?(:label_wiki_category):(:label_wiki_category_plural)) %></h3>
+    <% wiki_categories.sort.each do |category| %>
+      <%= link_to category, {:action => 'special', :page => 'category', :category => Wiki.titleize(category)} %><br />
+    <% end %>
+  <% end %>
+<% end %>

@@ -699,6 +699,11 @@ ru:
   label_wiki_edit_plural: Wiki
   label_wiki_page: Страница Wiki
   label_wiki_page_plural: Страницы Wiki
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_wiki_index_by_category: Index by category
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_workflow: Последовательность действий
   label_x_closed_issues_abbr:
     zero:  0 закрыто

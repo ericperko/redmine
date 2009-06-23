@@ -6,6 +6,7 @@ wiki_pages_001:
   wiki_id: 1
   protected: true
   parent_id: 
+  categories: |Examples|Documentation|
 wiki_pages_002: 
   created_on: 2007-03-08 00:18:07 +01:00
   title: Another_page
@@ -13,6 +14,7 @@ wiki_pages_002:
   wiki_id: 1
   protected: false
   parent_id: 
+  categories: 
 wiki_pages_003: 
   created_on: 2007-03-08 00:18:07 +01:00
   title: Start_page
@@ -20,6 +22,7 @@ wiki_pages_003:
   wiki_id: 2
   protected: false
   parent_id: 
+  categories: 
 wiki_pages_004: 
   created_on: 2007-03-08 00:18:07 +01:00
   title: Page_with_an_inline_image
@@ -27,6 +30,7 @@ wiki_pages_004:
   wiki_id: 1
   protected: false
   parent_id: 1
+  categories: |Examples|
 wiki_pages_005: 
   created_on: 2007-03-08 00:18:07 +01:00
   title: Child_1
@@ -34,6 +38,7 @@ wiki_pages_005:
   wiki_id: 1
   protected: false
   parent_id: 2
+  categories: |Examples|
 wiki_pages_006: 
   created_on: 2007-03-08 00:18:07 +01:00
   title: Child_2
@@ -41,4 +46,4 @@ wiki_pages_006:
   wiki_id: 1
   protected: false
   parent_id: 2
-  
+  categories: |Examples|

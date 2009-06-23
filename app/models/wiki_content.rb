@@ -23,7 +23,21 @@ class WikiContent < ActiveRecord::Base
   belongs_to :author, :class_name => 'User', :foreign_key => 'author_id'
   validates_presence_of :text
   validates_length_of :comments, :maximum => 255, :allow_nil => true
-  
+
+  def after_save
+    page.categories = categories.join('|')
+    page.categories = '|' + page.categories + '|' if !categories.empty? 
+    page.save!
+  end
+
+  def categories
+    if text.match(/\{\{categor(?:y|ies)\((.+?)\)\}\}/)
+      $1.split(/\s*,\s*/).map { |c| Wiki.upcase_first(c) }
+    else
+      []
+    end
+  end
+
   acts_as_versioned
     
   def project

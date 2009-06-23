@@ -582,6 +582,11 @@ de:
   label_wiki_edit_plural: Wiki-Bearbeitungen
   label_wiki_page: Wiki-Seite
   label_wiki_page_plural: Wiki-Seiten
+  label_wiki_category: Kategorie
+  label_wiki_category_plural: Kategorien
+  label_index_by_category: Seiten nach Kategorie sortiert
+  label_special: Speziell
+  label_pages_without_category: Seiten ohne Kategorie
   label_index_by_title: Seiten nach Titel sortiert
   label_index_by_date: Seiten nach Datum sortiert
   label_current_version: Gegenwärtige Version

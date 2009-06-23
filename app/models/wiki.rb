@@ -44,7 +44,27 @@ class Wiki < ActiveRecord::Base
     end
     page
   end
-  
+
+  # Find pages which belong to a certain category.
+  # Special category 'None' contains all pages with no particular category set.
+  def find_pages_in_category(category)
+    if category == 'None'
+      pages.find :all, :conditions => "categories = '' OR categories IS NULL", :order=> 'title'
+    else
+      pages.find :all, :conditions => [ "LOWER(categories) LIKE LOWER(?)", "%|#{category.downcase}|%"], :order=> 'title'
+    end
+  end
+
+  # Traverse all pages and compile a list of categories.
+  def find_all_categories
+    categories = {}
+    groups = pages.find :all, :select => :categories, :conditions => "categories != ''", :group => :categories
+    groups.map {|c| c.categories[1..-2].split('|') }.flatten.sort.each do |g|
+      categories[g.downcase] = g   # case insensitive uniq
+    end
+    categories.values
+  end
+
   # Finds a page by title
   # The given string can be of one of the forms: "title" or "project:title"
   # Examples:
@@ -63,13 +83,17 @@ class Wiki < ActiveRecord::Base
       end
     end
   end
-  
+
+  # Upcase only the first letter of a title
+  def self.upcase_first(title='')
+    title = (title.slice(0..0).upcase + (title.slice(1..-1) || '')) if title
+  end
+
   # turn a string into a valid page title
   def self.titleize(title)
     # replace spaces with _ and remove unwanted caracters
     title = title.gsub(/\s+/, '_').delete(',./?;|:') if title
-    # upcase the first letter
-    title = (title.slice(0..0).upcase + (title.slice(1..-1) || '')) if title
+    title = self.upcase_first(title)
     title
   end  
 end

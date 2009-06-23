@@ -116,6 +116,29 @@ module Redmine
         @included_wiki_pages.pop
         out
       end
+
+      desc "Add the current wiki page to a category.\nExample: !{{category(Help)}}"
+      macro :category do |obj, args|
+        ''   # categories are listed in the sidebar
+      end
+
+      desc "Add the current wiki page to several categories.\nExample: !{{categories(Help, Snippets)}}"
+      macro :categories do |obj, args|
+        ''   # categories are listed in the sidebar
+      end
+
+      desc "Display a list of pages which belong to the specified category.\nExample: !{{pages_in_category(Help)}}"
+      macro :pages_in_category do |obj, args|
+        if !args.first.nil?
+          content_tag :ul, :class => :pages_in_category  do
+            @wiki.find_pages_in_category(args.first).map do |p|
+              content_tag :li do
+                link_to p.pretty_title, {:action => 'index', :page => p.title}
+              end 
+            end
+          end
+        end
+      end
     end
   end
 end

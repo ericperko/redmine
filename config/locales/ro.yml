@@ -559,6 +559,11 @@ ro:
   label_wiki_edit_plural: Editari Wiki
   label_wiki_page: Pagina Wiki
   label_wiki_page_plural: Pagini Wiki
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_wiki_index_by_category: Index by category
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Sorteaza dupa titlu
   label_index_by_date: Sorteaza dupa data
   label_current_version: Versiunea curenta
