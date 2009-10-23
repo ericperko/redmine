@@ -1,0 +1,27 @@
+<% if @category == 'None' %>
+  <h2><%= l(:label_pages_without_category) %></h2>
+<% else %>
+  <h2><%= l(:label_wiki_category) %>: <%= @category %></h2>
+<% end %>
+
+<% if @pages.empty? %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+<% end %>
+
+<% content_for :sidebar do %>
+  <%= render :partial => 'sidebar' %>
+<% end %>
+
+<% unless @pages.empty? %>
+  <p>
+    <ul>
+      <% group = nil %>
+      <% @pages.each do |page| %>
+        <% if page.title[0,1].upcase != group %>
+          </ul><h4><%= group = page.title[0,1].upcase %></h4><ul>
+        <% end %>
+        <li><%= link_to page.pretty_title, {:action => 'index', :page => page.title} %></li>
+      <% end %>
+    </ul>
+  </p>
+<% end %>

@@ -49,13 +49,14 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'projects/:id/wiki/destroy', :controller => 'wikis', :action => 'destroy', :conditions => {:method => :post}
   map.with_options :controller => 'wiki' do |wiki_routes|
     wiki_routes.with_options :conditions => {:method => :get} do |wiki_views|
-      wiki_views.connect 'projects/:id/wiki/:page', :action => 'special', :page => /page_index|date_index|export/i
+      wiki_views.connect 'projects/:id/wiki/:page', :action => 'special', :page => /page_index|date_index|category_index|export/i
       wiki_views.connect 'projects/:id/wiki/:page', :action => 'index', :page => nil
       wiki_views.connect 'projects/:id/wiki/:page/edit', :action => 'edit'
       wiki_views.connect 'projects/:id/wiki/:page/rename', :action => 'rename'
       wiki_views.connect 'projects/:id/wiki/:page/history', :action => 'history'
       wiki_views.connect 'projects/:id/wiki/:page/diff/:version/vs/:version_from', :action => 'diff'
       wiki_views.connect 'projects/:id/wiki/:page/annotate/:version', :action => 'annotate'
+      wiki_views.connect 'projects/:id/wiki/category/:category', :action => 'special', :page => 'category'
     end
     
     wiki_routes.connect 'projects/:id/wiki/:page/:action', 

@@ -642,8 +642,13 @@ sv:
   label_wiki_edit_plural: Wikiändringar
   label_wiki_page: Wikisida
   label_wiki_page_plural: Wikisidor
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Innehåll efter titel
   label_index_by_date: Innehåll efter datum
+  label_index_by_category: Index by category
   label_current_version: Nuvarande version
   label_preview: Förhandsgranska
   label_feed_plural: Feeds

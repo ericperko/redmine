@@ -403,6 +403,7 @@ nl:
   label_incoming_emails: Inkomende e-mail
   label_index_by_date: Indexeer op datum
   label_index_by_title: Indexeer op titel
+  label_index_by_category: Index by category
   label_information: Informatie
   label_information_plural: Informatie
   label_integer: Integer
@@ -588,6 +589,10 @@ nl:
   label_wiki_edit_plural: Wiki edits
   label_wiki_page: Wikipagina
   label_wiki_page_plural: Wikipagina's
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_workflow: Workflow
   label_year: Jaar
   label_yesterday: gisteren

@@ -595,8 +595,13 @@ el:
   label_wiki_edit_plural: Επεξεργασία wiki
   label_wiki_page: Σελίδα Wiki
   label_wiki_page_plural: Σελίδες Wiki
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Δείκτης ανά τίτλο
   label_index_by_date: Δείκτης ανά ημερομηνία
+  label_index_by_category: Index by category
   label_current_version: Τρέχουσα έκδοση
   label_preview: Προεπισκόπηση
   label_feed_plural: Feeds

@@ -597,8 +597,13 @@ bs:
   label_wiki_edit_plural: ispravke wiki-ja
   label_wiki_page: Wiki stranica
   label_wiki_page_plural: Wiki stranice
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Indeks prema naslovima
   label_index_by_date: Indeks po datumima
+  label_index_by_category: Index by category
   label_current_version: Tekuća verzija
   label_preview: Pregled
   label_feed_plural: Feeds

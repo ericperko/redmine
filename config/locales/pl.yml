@@ -437,6 +437,7 @@ pl:
   label_incoming_emails: Przychodząca poczta elektroniczna
   label_index_by_date: Index by date
   label_index_by_title: Indeks
+  label_index_by_category: Index by category
   label_information: Informacja
   label_information_plural: Informacje
   label_integer: Liczba całkowita
@@ -626,6 +627,10 @@ pl:
   label_wiki_edit_plural: Edycje wiki
   label_wiki_page: Strona wiki
   label_wiki_page_plural: Strony wiki
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_workflow: Przepływ
   label_year: Rok
   label_yesterday: wczoraj

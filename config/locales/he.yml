@@ -463,8 +463,13 @@ he:
   label_wiki_edit_plural: עריכות Wiki
   label_wiki_page: דף Wiki
   label_wiki_page_plural: דפי Wiki
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: סדר על פי כותרת
   label_index_by_date: סדר על פי תאריך
+  label_index_by_category: Index by category
   label_current_version: גירסא נוכאית
   label_preview: תצוגה מקדימה
   label_feed_plural: הזנות

@@ -25,9 +25,23 @@ class WikiContent < ActiveRecord::Base
   validates_length_of :comments, :maximum => 255, :allow_nil => true
   
   acts_as_versioned
-    
+
+  def after_save
+    page.categories = categories.join('|')
+    page.categories = '|' + page.categories + '|' if !categories.empty? 
+    page.save!
+  end
+
   def project
     page.project
+  end
+
+  def categories
+    if text.match(/\{\{categor(?:y|ies)\((.+?)\)\}\}/)
+      $1.split(/\s*,\s*/).map { |c| Wiki.upcase_first(c) }
+    else
+      []
+    end
   end
   
   class Version

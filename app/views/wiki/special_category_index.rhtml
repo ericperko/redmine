@@ -1,0 +1,28 @@
+<h2><%= l(:label_index_by_category) %></h2>
+
+<% content_for :sidebar do %>
+  <%= render :partial => 'sidebar' %>
+<% end %>
+
+<% unless @categories.empty? %>
+  <p>
+    <ul>
+      <% group = nil %>
+      <% @categories.each do |category| %>
+        <% if category[0,1].upcase != group %>
+          </ul><h4><%= group = category[0,1].upcase %></h4><ul>
+        <% end %>
+        <li><%= link_to category, {:action => 'special', :page => 'category', :category => category} %></li>
+      <% end %>
+    </ul>
+  </p>
+<% end %>
+
+<h4><%= l(:label_special) %></h4>
+<p>
+  <ul>
+    <li>
+      <%= link_to l(:label_pages_without_category), {:action => 'special', :page => 'category', :category => 'None'} %>
+    </li>
+  </ul>
+</p>

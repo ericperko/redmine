@@ -601,8 +601,13 @@ lt:
   label_wiki_edit_plural: Wiki redakcijos
   label_wiki_page: Wiki puslapis
   label_wiki_page_plural: Wiki puslapiai
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Indeksas prie pavadinimo
   label_index_by_date: Indeksas prie datos
+  label_index_by_category: Index by category
   label_current_version: Einamoji versija
   label_preview: Peržiūra
   label_feed_plural: Įeitys(Feeds)

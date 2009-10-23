@@ -575,8 +575,13 @@ ro:
   label_wiki_edit_plural: Editări Wiki
   label_wiki_page: Pagină Wiki
   label_wiki_page_plural: Pagini Wiki
+  label_wiki_category: Category
+  label_wiki_category_plural: Categories
+  label_special: Special
+  label_pages_without_category: Pages without category
   label_index_by_title: Sortează după titlu
   label_index_by_date: Sortează după dată
+  label_index_by_category: Index by category
   label_current_version: Versiunea curentă
   label_preview: Previzualizare
   label_feed_plural: Feed-uri
