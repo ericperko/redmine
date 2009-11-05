@@ -14,6 +14,13 @@ rescue LoadError
   # RMagick is not available
 end
 
+if RUBY_VERSION < '1.9'
+  require 'faster_csv'
+else
+  require 'csv'
+  FCSV = CSV
+end
+
 REDMINE_SUPPORTED_SCM = %w( Subversion Darcs Mercurial Cvs Bazaar Git Filesystem )
 
 # Permissions
@@ -52,6 +59,7 @@ Redmine::AccessControl.map do |map|
     # Watchers
     map.permission :view_issue_watchers, {}
     map.permission :add_issue_watchers, {:watchers => :new}
+    map.permission :delete_issue_watchers, {:watchers => :destroy}
   end
   
   map.project_module :time_tracking do |map|

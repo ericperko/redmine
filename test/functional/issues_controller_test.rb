@@ -180,10 +180,13 @@ class IssuesControllerTest < ActionController::TestCase
   end
   
   def test_index_csv_with_project
+    Setting.default_language = 'en'
+    
     get :index, :format => 'csv'
     assert_response :success
     assert_not_nil assigns(:issues)
     assert_equal 'text/csv', @response.content_type
+    assert @response.body.starts_with?("#,")
 
     get :index, :project_id => 1, :format => 'csv'
     assert_response :success
@@ -375,7 +378,7 @@ class IssuesControllerTest < ActionController::TestCase
     assert_response :success
     assert_template 'changes.rxml'
     # Inline image
-    assert @response.body.include?("&lt;img src=&quot;http://test.host/attachments/download/10&quot; alt=&quot;&quot; /&gt;")
+    assert @response.body.include?("&lt;img src=\"http://test.host/attachments/download/10\" alt=\"\" /&gt;")
   end
   
   def test_new_routing

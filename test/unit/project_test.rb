@@ -382,7 +382,7 @@ class ProjectTest < ActiveSupport::TestCase
       @source_project = Project.find(2)
       @project = Project.new(:name => 'Copy Test', :identifier => 'copy-test')
       @project.trackers = @source_project.trackers
-      @project.enabled_modules = @source_project.enabled_modules
+      @project.enabled_module_names = @source_project.enabled_modules.collect(&:name)
     end
 
     should "copy issues" do
@@ -456,7 +456,9 @@ class ProjectTest < ActiveSupport::TestCase
     end
 
     should "copy wiki" do
-      assert @project.copy(@source_project)
+      assert_difference 'Wiki.count' do
+        assert @project.copy(@source_project)
+      end
 
       assert @project.wiki
       assert_not_equal @source_project.wiki, @project.wiki
@@ -486,6 +488,15 @@ class ProjectTest < ActiveSupport::TestCase
       end
     end
 
+    should "copy boards" do
+      assert @project.copy(@source_project)
+
+      assert_equal 1, @project.boards.size
+      @project.boards.each do |board|
+        assert !@source_project.boards.include?(board)
+      end
+    end
+
     should "change the new issues to use the copied issue categories" do
       issue = Issue.find(4)
       issue.update_attribute(:category_id, 3)
@@ -497,6 +508,18 @@ class ProjectTest < ActiveSupport::TestCase
         assert_equal "Stock management", issue.category.name # Same name
         assert_not_equal IssueCategory.find(3), issue.category # Different record
       end
+    end
+    
+    should "limit copy with :only option" do
+      assert @project.members.empty?
+      assert @project.issue_categories.empty?
+      assert @source_project.issues.any?
+    
+      assert @project.copy(@source_project, :only => ['members', 'issue_categories'])
+
+      assert @project.members.any?
+      assert @project.issue_categories.any?
+      assert @project.issues.empty?
     end
     
     should "copy issue relations"
