@@ -17,7 +17,7 @@
 
 require File.dirname(__FILE__) + '/../test_helper'
 
-class MailHandlerTest < Test::Unit::TestCase
+class MailHandlerTest < ActiveSupport::TestCase
   fixtures :users, :projects, 
                    :enabled_modules,
                    :roles,
@@ -42,6 +42,7 @@ class MailHandlerTest < Test::Unit::TestCase
   end
   
   def test_add_issue
+    ActionMailer::Base.deliveries.clear
     # This email contains: 'Project: onlinestore'
     issue = submit_email('ticket_on_given_project.eml')
     assert issue.is_a?(Issue)
@@ -55,6 +56,10 @@ class MailHandlerTest < Test::Unit::TestCase
     # keywords should be removed from the email body
     assert !issue.description.match(/^Project:/i)
     assert !issue.description.match(/^Status:/i)
+    # Email notification should be sent
+    mail = ActionMailer::Base.deliveries.last
+    assert_not_nil mail
+    assert mail.subject.include?('New ticket on a given project')
   end
 
   def test_add_issue_with_status
@@ -183,6 +188,13 @@ class MailHandlerTest < Test::Unit::TestCase
   def test_add_issue_without_from_header
     Role.anonymous.add_permission!(:add_issues)
     assert_equal false, submit_email('ticket_without_from_header.eml')
+  end
+
+  def test_should_ignore_emails_from_emission_address
+    Role.anonymous.add_permission!(:add_issues)
+    assert_no_difference 'User.count' do
+      assert_equal false, submit_email('ticket_from_emission_address.eml', :issue => {:project => 'ecookbook'}, :unknown_user => 'create')
+    end
   end
 
   def test_add_issue_should_send_email_notification

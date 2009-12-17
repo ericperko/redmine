@@ -21,7 +21,7 @@ require 'sys_controller'
 # Re-raise errors caught by the controller.
 class SysController; def rescue_action(e) raise e end; end
 
-class SysControllerTest < Test::Unit::TestCase
+class SysControllerTest < ActionController::TestCase
   fixtures :projects, :repositories
   
   def setup
@@ -52,5 +52,20 @@ class SysControllerTest < Test::Unit::TestCase
     r = Project.find(4).repository
     assert r.is_a?(Repository::Subversion)
     assert_equal 'file:///create/project/repository/subproject2', r.url
+  end
+  
+  def test_fetch_changesets
+    get :fetch_changesets
+    assert_response :success
+  end
+  
+  def test_fetch_changesets_one_project
+    get :fetch_changesets, :id => 'ecookbook'
+    assert_response :success
+  end
+  
+  def test_fetch_changesets_unknown_project
+    get :fetch_changesets, :id => 'unknown'
+    assert_response 404
   end
 end

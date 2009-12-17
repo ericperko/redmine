@@ -83,6 +83,16 @@ pt:
       format:
         precision: 1
         delimiter: ''
+      storage_units:
+        format: "%n %u"
+        units:
+          byte:
+            one: "Byte"
+            other: "Bytes"
+          kb: "KB"
+          mb: "MB"
+          gb: "GB"
+          tb: "TB"
 
   activerecord:
     errors:
@@ -213,7 +223,6 @@ pt:
   field_homepage: Página
   field_is_public: Público
   field_parent: Sub-projecto de
-  field_is_in_chlog: Tarefas mostradas no changelog
   field_is_in_roadmap: Tarefas mostradas no roadmap
   field_login: Nome de utilizador
   field_mail_notification: Notificações por e-mail
@@ -407,7 +416,6 @@ pt:
   label_news_latest: Últimas notícias
   label_news_view_all: Ver todas as notícias
   label_news_added: Notícia adicionada
-  label_change_log: Change log
   label_settings: Configurações
   label_overview: Visão geral
   label_version: Versão
@@ -675,9 +683,6 @@ pt:
   text_subprojects_destroy_warning: "O(s) seu(s) sub-projecto(s): {{value}} também será/serão apagado(s)."
   text_workflow_edit: Seleccione um papel e um tipo de tarefa para editar o workflow
   text_are_you_sure: Tem a certeza?
-  text_journal_changed: "mudado de {{old}} para {{new}}"
-  text_journal_set_to: "alterado para {{value}}"
-  text_journal_deleted: apagado
   text_tip_task_begin_day: tarefa a começar neste dia
   text_tip_task_end_day: tarefa a acabar neste dia
   text_tip_task_begin_end_day: tarefa a começar e acabar neste dia
@@ -720,7 +725,7 @@ pt:
   default_tracker_feature: Funcionalidade
   default_tracker_support: Suporte
   default_issue_status_new: Novo
-  default_issue_status_assigned: Atribuído
+  default_issue_status_in_progress: In Progress
   default_issue_status_resolved: Resolvido
   default_issue_status_feedback: Feedback
   default_issue_status_closed: Fechado
@@ -830,3 +835,45 @@ pt:
   label_view_all_revisions: View all revisions
   label_tag: Tag
   label_branch: Branch
+  error_no_tracker_in_project: No tracker is associated to this project. Please check the Project settings.
+  error_no_default_issue_status: No default issue status is defined. Please check your configuration (Go to "Administration -> Issue statuses").
+  label_group_plural: Groups
+  label_group: Group
+  label_group_new: New group
+  label_time_entry_plural: Spent time
+  text_journal_changed: "{{label}} changed from {{old}} to {{new}}"
+  text_journal_set_to: "{{label}} set to {{value}}"
+  text_journal_deleted: "{{label}} deleted ({{old}})"
+  text_journal_added: "{{label}} {{value}} added"
+  field_active: Active
+  enumeration_system_activity: System Activity
+  permission_delete_issue_watchers: Delete watchers
+  version_status_closed: closed
+  version_status_locked: locked
+  version_status_open: open
+  error_can_not_reopen_issue_on_closed_version: An issue assigned to a closed version can not be reopened
+  label_user_anonymous: Anonymous
+  button_move_and_follow: Move and follow
+  setting_default_projects_modules: Default enabled modules for new projects
+  setting_gravatar_default: Default Gravatar image
+  field_sharing: Sharing
+  label_version_sharing_hierarchy: With project hierarchy
+  label_version_sharing_system: With all projects
+  label_version_sharing_descendants: With subprojects
+  label_version_sharing_tree: With project tree
+  label_version_sharing_none: Not shared
+  error_can_not_archive_project: This project can not be archived
+  button_duplicate: Duplicate
+  button_copy_and_follow: Copy and follow
+  label_copy_source: Source
+  setting_issue_done_ratio: Calculate the issue done ratio with
+  setting_issue_done_ratio_issue_status: Use the issue status
+  error_issue_done_ratios_not_updated: Issue done ratios not updated.
+  error_workflow_copy_target: Please select target tracker(s) and role(s)
+  setting_issue_done_ratio_issue_field: Use the issue field
+  label_copy_same_as_target: Same as target
+  label_copy_target: Target
+  notice_issue_done_ratios_updated: Issue done ratios updated.
+  error_workflow_copy_source: Please select a source tracker or role
+  label_update_issue_done_ratios: Update issue done ratios
+  setting_start_of_week: Start calendars on

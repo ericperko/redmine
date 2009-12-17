@@ -59,6 +59,22 @@ sk:
       over_x_years:
         one:   "cez 1 rok"
         other: "cez {{count}} roky/ov"
+
+  number: 
+    human: 
+      format: 
+        precision: 1
+        delimiter: ""
+      storage_units: 
+        format: "%n %u"
+        units: 
+          kb: KB
+          tb: TB
+          gb: GB
+          byte: 
+            one: Byte
+            other: Bytes
+          mb: MB
         
 # Used in array.to_sentence.
   support:
@@ -189,7 +205,6 @@ sk:
   field_homepage: Domovská stránka
   field_is_public: Verejný
   field_parent: Nadradený projekt
-  field_is_in_chlog: Úlohy zobrazené v rozdielovom logu
   field_is_in_roadmap: Úlohy zobrazené v pláne
   field_login: Login
   field_mail_notification: Emailové oznámenie
@@ -376,7 +391,6 @@ sk:
   label_news_latest: Posledné novinky
   label_news_view_all: Zobrazit všetky novinky
   label_news_added: Novinka pridaná
-  label_change_log: Protokol zmien
   label_settings: Nastavenie
   label_overview: Prehľad
   label_version: Verzia
@@ -635,9 +649,6 @@ sk:
   text_project_destroy_confirmation: Ste si istý, že chcete odstránit tento projekt a všetky súvisiace dáta ?
   text_workflow_edit: Vyberte rolu a frontu k úprave workflow
   text_are_you_sure: Ste si istý?
-  text_journal_changed: "zmenené z {{old}} na {{new}}"
-  text_journal_set_to: "nastavené na {{value}}"
-  text_journal_deleted: odstránené
   text_tip_task_begin_day: úloha začína v tento deň
   text_tip_task_end_day: úloha končí v tento deň
   text_tip_task_begin_end_day: úloha začína a končí v tento deň
@@ -676,7 +687,7 @@ sk:
   default_tracker_feature: Rozšírenie
   default_tracker_support: Podpora
   default_issue_status_new: Nový
-  default_issue_status_assigned: Priradený
+  default_issue_status_in_progress: In Progress
   default_issue_status_resolved: Vyriešený
   default_issue_status_feedback: Čaká sa
   default_issue_status_closed: Uzavrený
@@ -811,3 +822,45 @@ sk:
   label_view_all_revisions: View all revisions
   label_tag: Tag
   label_branch: Branch
+  error_no_tracker_in_project: No tracker is associated to this project. Please check the Project settings.
+  error_no_default_issue_status: No default issue status is defined. Please check your configuration (Go to "Administration -> Issue statuses").
+  text_journal_changed: "{{label}} changed from {{old}} to {{new}}"
+  text_journal_set_to: "{{label}} set to {{value}}"
+  text_journal_deleted: "{{label}} deleted ({{old}})"
+  label_group_plural: Groups
+  label_group: Group
+  label_group_new: New group
+  label_time_entry_plural: Spent time
+  text_journal_added: "{{label}} {{value}} added"
+  field_active: Active
+  enumeration_system_activity: System Activity
+  permission_delete_issue_watchers: Delete watchers
+  version_status_closed: closed
+  version_status_locked: locked
+  version_status_open: open
+  error_can_not_reopen_issue_on_closed_version: An issue assigned to a closed version can not be reopened
+  label_user_anonymous: Anonymous
+  button_move_and_follow: Move and follow
+  setting_default_projects_modules: Default enabled modules for new projects
+  setting_gravatar_default: Default Gravatar image
+  field_sharing: Sharing
+  label_version_sharing_hierarchy: With project hierarchy
+  label_version_sharing_system: With all projects
+  label_version_sharing_descendants: With subprojects
+  label_version_sharing_tree: With project tree
+  label_version_sharing_none: Not shared
+  error_can_not_archive_project: This project can not be archived
+  button_duplicate: Duplicate
+  button_copy_and_follow: Copy and follow
+  label_copy_source: Source
+  setting_issue_done_ratio: Calculate the issue done ratio with
+  setting_issue_done_ratio_issue_status: Use the issue status
+  error_issue_done_ratios_not_updated: Issue done ratios not updated.
+  error_workflow_copy_target: Please select target tracker(s) and role(s)
+  setting_issue_done_ratio_issue_field: Use the issue field
+  label_copy_same_as_target: Same as target
+  label_copy_target: Target
+  notice_issue_done_ratios_updated: Issue done ratios updated.
+  error_workflow_copy_source: Please select a source tracker or role
+  label_update_issue_done_ratios: Update issue done ratios
+  setting_start_of_week: Start calendars on
