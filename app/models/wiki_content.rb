@@ -56,6 +56,10 @@ class WikiContent < ActiveRecord::Base
     end
   end
   
+  def attachments
+    page.nil? ? [] : page.attachments
+  end
+  
   # Returns the mail adresses of users that should be notified
   def recipients
     notified = project.notified_users

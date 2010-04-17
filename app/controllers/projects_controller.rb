@@ -53,6 +53,9 @@ class ProjectsController < ApplicationController
       format.html { 
         @projects = Project.visible.find(:all, :order => 'lft') 
       }
+      format.xml  {
+        @projects = Project.visible.find(:all, :order => 'lft')
+      }
       format.atom {
         projects = Project.visible.find(:all, :order => 'created_on DESC',
                                               :limit => Setting.feeds_limit.to_i)
@@ -73,7 +76,7 @@ class ProjectsController < ApplicationController
       @project.enabled_module_names = Setting.default_projects_modules
     else
       @project.enabled_module_names = params[:enabled_modules]
-      if @project.save
+      if validate_parent_id && @project.save
         @project.set_allowed_parent!(params[:project]['parent_id']) if params[:project].has_key?('parent_id')
         # Add current user as a project member if he is not admin
         unless User.current.admin?
@@ -81,8 +84,18 @@ class ProjectsController < ApplicationController
           m = Member.new(:user => User.current, :roles => [r])
           @project.members << m
         end
-        flash[:notice] = l(:notice_successful_create)
-        redirect_to :controller => 'projects', :action => 'settings', :id => @project
+        respond_to do |format|
+          format.html { 
+            flash[:notice] = l(:notice_successful_create)
+            redirect_to :controller => 'projects', :action => 'settings', :id => @project
+          }
+          format.xml  { head :created, :location => url_for(:controller => 'projects', :action => 'show', :id => @project.id) }
+        end
+      else
+        respond_to do |format|
+          format.html
+          format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
+        end
       end
     end	
   end
@@ -102,13 +115,21 @@ class ProjectsController < ApplicationController
         redirect_to :controller => 'admin', :action => 'projects'
       end  
     else
-      @project = Project.new(params[:project])
-      @project.enabled_module_names = params[:enabled_modules]
-      if @project.copy(@source_project, :only => params[:only])
-        @project.set_allowed_parent!(params[:project]['parent_id']) if params[:project].has_key?('parent_id')
-        flash[:notice] = l(:notice_successful_create)
-        redirect_to :controller => 'admin', :action => 'projects'
-      end		
+      Mailer.with_deliveries(params[:notifications] == '1') do
+        @project = Project.new(params[:project])
+        @project.enabled_module_names = params[:enabled_modules]
+        if validate_parent_id && @project.copy(@source_project, :only => params[:only])
+          @project.set_allowed_parent!(params[:project]['parent_id']) if params[:project].has_key?('parent_id')
+          flash[:notice] = l(:notice_successful_create)
+          redirect_to :controller => 'admin', :action => 'projects'
+        elsif !@project.new_record?
+          # Project was created
+          # But some objects were not copied due to validation failures
+          # (eg. issues from disabled trackers)
+          # TODO: inform about that
+          redirect_to :controller => 'admin', :action => 'projects'
+        end
+      end
     end
   rescue ActiveRecord::RecordNotFound
     redirect_to :controller => 'admin', :action => 'projects'
@@ -141,6 +162,11 @@ class ProjectsController < ApplicationController
                                    :conditions => cond).to_f
     end
     @key = User.current.rss_key
+    
+    respond_to do |format|
+      format.html
+      format.xml
+    end
   end
 
   def settings
@@ -154,21 +180,33 @@ class ProjectsController < ApplicationController
   
   # Edit @project
   def edit
-    if request.post?
+    if request.get?
+    else
       @project.attributes = params[:project]
-      if @project.save
+      if validate_parent_id && @project.save
         @project.set_allowed_parent!(params[:project]['parent_id']) if params[:project].has_key?('parent_id')
-        flash[:notice] = l(:notice_successful_update)
-        redirect_to :action => 'settings', :id => @project
+        respond_to do |format|
+          format.html { 
+            flash[:notice] = l(:notice_successful_update)
+            redirect_to :action => 'settings', :id => @project
+          }
+          format.xml  { head :ok }
+        end
       else
-        settings
-        render :action => 'settings'
+        respond_to do |format|
+          format.html { 
+            settings
+            render :action => 'settings'
+          }
+          format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
+        end
       end
     end
   end
   
   def modules
     @project.enabled_module_names = params[:enabled_modules]
+    flash[:notice] = l(:notice_successful_update)
     redirect_to :action => 'settings', :id => @project, :tab => 'modules'
   end
 
@@ -189,81 +227,29 @@ class ProjectsController < ApplicationController
   # Delete @project
   def destroy
     @project_to_destroy = @project
-    if request.post? and params[:confirm]
-      @project_to_destroy.destroy
-      redirect_to :controller => 'admin', :action => 'projects'
-    end
-    # hide project in layout
-    @project = nil
-  end
-	
-  # Add a new issue category to @project
-  def add_issue_category
-    @category = @project.issue_categories.build(params[:category])
-    if request.post?
-      if @category.save
-    	  respond_to do |format|
-          format.html do
-            flash[:notice] = l(:notice_successful_create)
-            redirect_to :action => 'settings', :tab => 'categories', :id => @project
-          end
-          format.js do
-            # IE doesn't support the replace_html rjs method for select box options
-            render(:update) {|page| page.replace "issue_category_id",
-              content_tag('select', '<option></option>' + options_from_collection_for_select(@project.issue_categories, 'id', 'name', @category.id), :id => 'issue_category_id', :name => 'issue[category_id]')
-            }
-          end
-        end
-      else
+    if request.get?
+      # display confirmation view
+    else
+      if params[:format] == 'xml' || params[:confirm]
+        @project_to_destroy.destroy
         respond_to do |format|
-          format.html
-          format.js do
-            render(:update) {|page| page.alert(@category.errors.full_messages.join('\n')) }
-          end
+          format.html { redirect_to :controller => 'admin', :action => 'projects' }
+          format.xml  { head :ok }
         end
       end
     end
-  end
-	
-  # Add a new version to @project
-  def add_version
-    @version = @project.versions.build
-    if params[:version]
-      attributes = params[:version].dup
-      attributes.delete('sharing') unless attributes.nil? || @version.allowed_sharings.include?(attributes['sharing'])
-      @version.attributes = attributes
-    end
-  	if request.post?
-  	  if @version.save
-        respond_to do |format|
-          format.html do
-            flash[:notice] = l(:notice_successful_create)
-            redirect_to :action => 'settings', :tab => 'versions', :id => @project
-          end
-          format.js do
-            # IE doesn't support the replace_html rjs method for select box options
-            render(:update) {|page| page.replace "issue_fixed_version_id",
-              content_tag('select', '<option></option>' + version_options_for_select(@project.shared_versions.open, @version), :id => 'issue_fixed_version_id', :name => 'issue[fixed_version_id]')
-            }
-          end
-        end
-      else
-        respond_to do |format|
-          format.html
-          format.js do
-            render(:update) {|page| page.alert(@version.errors.full_messages.join('\n')) }
-          end
-        end
-  	  end
-  	end
+    # hide project in layout
+    @project = nil
   end
 
   def add_file
     if request.post?
       container = (params[:version_id].blank? ? @project : @project.versions.find_by_id(params[:version_id]))
-      attachments = attach_files(container, params[:attachments])
+      attachments = Attachment.attach_files(container, params[:attachments])
+      render_attachment_warning_if_needed(container)
+
       if !attachments.empty? && Setting.notified_events.include?('file_added')
-        Mailer.deliver_attachments_added(attachments)
+        Mailer.deliver_attachments_added(attachments[:files])
       end
       redirect_to :controller => 'projects', :action => 'list_files', :id => @project
       return
@@ -278,6 +264,7 @@ class ProjectsController < ApplicationController
           @project.update_or_create_time_entry_activity(id, activity)
         end
       end
+      flash[:notice] = l(:notice_successful_update)
     end
     
     redirect_to :controller => 'projects', :action => 'settings', :tab => 'activities', :id => @project
@@ -287,6 +274,7 @@ class ProjectsController < ApplicationController
     @project.time_entry_activities.each do |time_entry_activity|
       time_entry_activity.destroy(time_entry_activity.parent)
     end
+    flash[:notice] = l(:notice_successful_update)
     redirect_to :controller => 'projects', :action => 'settings', :tab => 'activities', :id => @project
   end
   
@@ -314,18 +302,14 @@ class ProjectsController < ApplicationController
     @issues_by_version = {}
     unless @selected_tracker_ids.empty?
       @versions.each do |version|
-        conditions = {:tracker_id => @selected_tracker_ids}
-        if !@project.versions.include?(version)
-          conditions.merge!(:project_id => project_ids)
-        end
         issues = version.fixed_issues.visible.find(:all,
                                                    :include => [:project, :status, :tracker, :priority],
-                                                   :conditions => conditions,
+                                                   :conditions => {:tracker_id => @selected_tracker_ids, :project_id => project_ids},
                                                    :order => "#{Project.table_name}.lft, #{Tracker.table_name}.position, #{Issue.table_name}.id")
         @issues_by_version[version] = issues
       end
     end
-    @versions.reject! {|version| !project_ids.include?(version.project_id) && @issues_by_version[version].empty?}
+    @versions.reject! {|version| !project_ids.include?(version.project_id) && @issues_by_version[version].blank?}
   end
   
   def activity
@@ -371,15 +355,6 @@ class ProjectsController < ApplicationController
   end
   
 private
-  # Find project of id params[:id]
-  # if not found, redirect to project list
-  # Used as a before_filter
-  def find_project
-    @project = Project.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    render_404
-  end
-  
   def find_optional_project
     return true unless params[:id]
     @project = Project.find(params[:id])
@@ -394,5 +369,20 @@ private
     else
       @selected_tracker_ids = (default_trackers || selectable_trackers).collect {|t| t.id.to_s }
     end
+  end
+  
+  # Validates parent_id param according to user's permissions
+  # TODO: move it to Project model in a validation that depends on User.current
+  def validate_parent_id
+    return true if User.current.admin?
+    parent_id = params[:project] && params[:project][:parent_id]
+    if parent_id || @project.new_record?
+      parent = parent_id.blank? ? nil : Project.find_by_id(parent_id.to_i)
+      unless @project.allowed_parents.include?(parent)
+        @project.errors.add :parent_id, :invalid
+        return false
+      end
+    end
+    true
   end
 end

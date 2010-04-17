@@ -75,4 +75,71 @@ class ActiveSupport::TestCase
     yield
     saved_settings.each {|k, v| Setting[k] = v}
   end
+
+  def self.ldap_configured?
+    @test_ldap = Net::LDAP.new(:host => '127.0.0.1', :port => 389)
+    return @test_ldap.bind
+  rescue Exception => e
+    # LDAP is not listening
+    return nil
+  end
+
+  # Shoulda macros
+  def self.should_render_404
+    should_respond_with :not_found
+    should_render_template 'common/404'
+  end
+
+  def self.should_have_before_filter(expected_method, options = {})
+    should_have_filter('before', expected_method, options)
+  end
+
+  def self.should_have_after_filter(expected_method, options = {})
+    should_have_filter('after', expected_method, options)
+  end
+
+  def self.should_have_filter(filter_type, expected_method, options)
+    description = "have #{filter_type}_filter :#{expected_method}"
+    description << " with #{options.inspect}" unless options.empty?
+
+    should description do
+      klass = "action_controller/filters/#{filter_type}_filter".classify.constantize
+      expected = klass.new(:filter, expected_method.to_sym, options)
+      assert_equal 1, @controller.class.filter_chain.select { |filter|
+        filter.method == expected.method && filter.kind == expected.kind &&
+        filter.options == expected.options && filter.class == expected.class
+      }.size
+    end
+  end
+
+  def self.should_show_the_old_and_new_values_for(prop_key, model, &block)
+    context "" do
+      setup do
+        if block_given?
+          instance_eval &block
+        else
+          @old_value = model.generate!
+          @new_value = model.generate!
+        end
+      end
+
+      should "use the new value's name" do
+        @detail = JournalDetail.generate!(:property => 'attr',
+                                          :old_value => @old_value.id,
+                                          :value => @new_value.id,
+                                          :prop_key => prop_key)
+        
+        assert_match @new_value.name, show_detail(@detail, true)
+      end
+
+      should "use the old value's name" do
+        @detail = JournalDetail.generate!(:property => 'attr',
+                                          :old_value => @old_value.id,
+                                          :value => @new_value.id,
+                                          :prop_key => prop_key)
+        
+        assert_match @old_value.name, show_detail(@detail, true)
+      end
+    end
+  end
 end

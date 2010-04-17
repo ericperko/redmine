@@ -89,71 +89,163 @@ class ProjectsControllerTest < ActionController::TestCase
     )
   end
   
-  def test_get_add
-    @request.session[:user_id] = 1
-    get :add
-    assert_response :success
-    assert_template 'add'
-  end
-  
-  def test_get_add_by_non_admin
-    @request.session[:user_id] = 2
-    get :add
-    assert_response :success
-    assert_template 'add'
-  end
-  
-  def test_post_add
-    @request.session[:user_id] = 1
-    post :add, :project => { :name => "blog", 
-                             :description => "weblog",
-                             :identifier => "blog",
-                             :is_public => 1,
-                             :custom_field_values => { '3' => 'Beta' }
-                            }
-    assert_redirected_to '/projects/blog/settings'
+  context "#add" do
+    context "by admin user" do
+      setup do
+        @request.session[:user_id] = 1
+      end
+      
+      should "accept get" do
+        get :add
+        assert_response :success
+        assert_template 'add'
+      end
+      
+      should "accept post" do
+        post :add, :project => { :name => "blog", 
+                                 :description => "weblog",
+                                 :identifier => "blog",
+                                 :is_public => 1,
+                                 :custom_field_values => { '3' => 'Beta' }
+                                }
+        assert_redirected_to '/projects/blog/settings'
+        
+        project = Project.find_by_name('blog')
+        assert_kind_of Project, project
+        assert_equal 'weblog', project.description 
+        assert_equal true, project.is_public?
+        assert_nil project.parent
+      end
+      
+      should "accept post with parent" do
+        post :add, :project => { :name => "blog", 
+                                 :description => "weblog",
+                                 :identifier => "blog",
+                                 :is_public => 1,
+                                 :custom_field_values => { '3' => 'Beta' },
+                                 :parent_id => 1
+                                }
+        assert_redirected_to '/projects/blog/settings'
+        
+        project = Project.find_by_name('blog')
+        assert_kind_of Project, project
+        assert_equal Project.find(1), project.parent
+      end
+    end
     
-    project = Project.find_by_name('blog')
-    assert_kind_of Project, project
-    assert_equal 'weblog', project.description 
-    assert_equal true, project.is_public?
-    assert_nil project.parent
-  end
-  
-  def test_post_add_subproject
-    @request.session[:user_id] = 1
-    post :add, :project => { :name => "blog", 
-                             :description => "weblog",
-                             :identifier => "blog",
-                             :is_public => 1,
-                             :custom_field_values => { '3' => 'Beta' },
-                             :parent_id => 1
-                            }
-    assert_redirected_to '/projects/blog/settings'
+    context "by non-admin user with add_project permission" do
+      setup do
+        Role.non_member.add_permission! :add_project
+        @request.session[:user_id] = 9
+      end
+      
+      should "accept get" do
+        get :add
+        assert_response :success
+        assert_template 'add'
+        assert_no_tag :select, :attributes => {:name => 'project[parent_id]'}
+      end
+      
+      should "accept post" do
+        post :add, :project => { :name => "blog", 
+                                 :description => "weblog",
+                                 :identifier => "blog",
+                                 :is_public => 1,
+                                 :custom_field_values => { '3' => 'Beta' }
+                                }
+        
+        assert_redirected_to '/projects/blog/settings'
+        
+        project = Project.find_by_name('blog')
+        assert_kind_of Project, project
+        assert_equal 'weblog', project.description 
+        assert_equal true, project.is_public?
+        
+        # User should be added as a project member
+        assert User.find(9).member_of?(project)
+        assert_equal 1, project.members.size
+      end
+      
+      should "fail with parent_id" do
+        assert_no_difference 'Project.count' do
+          post :add, :project => { :name => "blog", 
+                                   :description => "weblog",
+                                   :identifier => "blog",
+                                   :is_public => 1,
+                                   :custom_field_values => { '3' => 'Beta' },
+                                   :parent_id => 1
+                                  }
+        end
+        assert_response :success
+        project = assigns(:project)
+        assert_kind_of Project, project
+        assert_not_nil project.errors.on(:parent_id)
+      end
+    end
     
-    project = Project.find_by_name('blog')
-    assert_kind_of Project, project
-    assert_equal Project.find(1), project.parent
-  end
-  
-  def test_post_add_by_non_admin
-    @request.session[:user_id] = 2
-    post :add, :project => { :name => "blog", 
-                             :description => "weblog",
-                             :identifier => "blog",
-                             :is_public => 1,
-                             :custom_field_values => { '3' => 'Beta' }
-                            }
-    assert_redirected_to '/projects/blog/settings'
-    
-    project = Project.find_by_name('blog')
-    assert_kind_of Project, project
-    assert_equal 'weblog', project.description 
-    assert_equal true, project.is_public?
-    
-    # User should be added as a project member
-    assert User.find(2).member_of?(project)
-    assert_equal 1, project.members.size
+    context "by non-admin user with add_subprojects permission" do
+      setup do
+        Role.find(1).remove_permission! :add_project
+        Role.find(1).add_permission! :add_subprojects
+        @request.session[:user_id] = 2
+      end
+      
+      should "accept get" do
+        get :add, :parent_id => 'ecookbook'
+        assert_response :success
+        assert_template 'add'
+        # parent project selected
+        assert_tag :select, :attributes => {:name => 'project[parent_id]'},
+                            :child => {:tag => 'option', :attributes => {:value => '1', :selected => 'selected'}}
+        # no empty value
+        assert_no_tag :select, :attributes => {:name => 'project[parent_id]'},
+                               :child => {:tag => 'option', :attributes => {:value => ''}}
+      end
+      
+      should "accept post with parent_id" do
+        post :add, :project => { :name => "blog", 
+                                 :description => "weblog",
+                                 :identifier => "blog",
+                                 :is_public => 1,
+                                 :custom_field_values => { '3' => 'Beta' },
+                                 :parent_id => 1
+                                }
+        assert_redirected_to '/projects/blog/settings'
+        project = Project.find_by_name('blog')
+      end
+      
+      should "fail without parent_id" do
+        assert_no_difference 'Project.count' do
+          post :add, :project => { :name => "blog", 
+                                   :description => "weblog",
+                                   :identifier => "blog",
+                                   :is_public => 1,
+                                   :custom_field_values => { '3' => 'Beta' }
+                                  }
+        end
+        assert_response :success
+        project = assigns(:project)
+        assert_kind_of Project, project
+        assert_not_nil project.errors.on(:parent_id)
+      end
+      
+      should "fail with unauthorized parent_id" do
+        assert !User.find(2).member_of?(Project.find(6))
+        assert_no_difference 'Project.count' do
+          post :add, :project => { :name => "blog", 
+                                   :description => "weblog",
+                                   :identifier => "blog",
+                                   :is_public => 1,
+                                   :custom_field_values => { '3' => 'Beta' },
+                                   :parent_id => 6
+                                  }
+        end
+        assert_response :success
+        project = assigns(:project)
+        assert_kind_of Project, project
+        assert_not_nil project.errors.on(:parent_id)
+      end
+    end
   end
   
   def test_show_routing
@@ -221,6 +313,13 @@ class ProjectsControllerTest < ActionController::TestCase
     assert_template 'settings'
   end
   
+  def test_edit_routing
+    assert_routing(
+      {:method => :post, :path => '/projects/4223/edit'},
+      :controller => 'projects', :action => 'edit', :id => '4223'
+    )
+  end
+  
   def test_edit
     @request.session[:user_id] = 2 # manager
     post :edit, :id => 1, :project => {:name => 'Test changed name',
@@ -228,53 +327,6 @@ class ProjectsControllerTest < ActionController::TestCase
     assert_redirected_to 'projects/ecookbook/settings'
     project = Project.find(1)
     assert_equal 'Test changed name', project.name
-  end
-  
-  def test_add_version_routing
-    assert_routing(
-      {:method => :get, :path => 'projects/64/versions/new'},
-      :controller => 'projects', :action => 'add_version', :id => '64'
-    )
-    assert_routing(
-    #TODO: use PUT
-      {:method => :post, :path => 'projects/64/versions/new'},
-      :controller => 'projects', :action => 'add_version', :id => '64'
-    )
-  end
-  
-  def test_add_version
-    @request.session[:user_id] = 2 # manager
-    assert_difference 'Version.count' do
-      post :add_version, :id => '1', :version => {:name => 'test_add_version'}
-    end
-    assert_redirected_to '/projects/ecookbook/settings/versions'
-    version = Version.find_by_name('test_add_version')
-    assert_not_nil version
-    assert_equal 1, version.project_id
-  end
-  
-  def test_add_version_from_issue_form
-    @request.session[:user_id] = 2 # manager
-    assert_difference 'Version.count' do
-      xhr :post, :add_version, :id => '1', :version => {:name => 'test_add_version_from_issue_form'}
-    end
-    assert_response :success
-    assert_select_rjs :replace, 'issue_fixed_version_id'
-    version = Version.find_by_name('test_add_version_from_issue_form')
-    assert_not_nil version
-    assert_equal 1, version.project_id
-  end
-  
-  def test_add_issue_category_routing
-    assert_routing(
-      {:method => :get, :path => 'projects/test/categories/new'},
-      :controller => 'projects', :action => 'add_issue_category', :id => 'test'
-    )
-    assert_routing(
-    #TODO: use PUT and update form
-      {:method => :post, :path => 'projects/64/categories/new'},
-      :controller => 'projects', :action => 'add_issue_category', :id => '64'
-    )
   end
   
   def test_destroy_routing

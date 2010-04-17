@@ -59,5 +59,24 @@ class WikiTest < ActiveSupport::TestCase
     assert_equal [1], @wiki.find_pages_in_category('Documentation').map {|c| c.id }.sort
     assert_equal [1, 4, 5, 6], @wiki.find_pages_in_category('Examples').map {|c| c.id }.sort
     assert_equal [2], @wiki.find_pages_in_category('None').map {|c| c.id }.sort
+  
+  context "#sidebar" do
+    setup do
+      @wiki = Wiki.find(1)
+    end
+    
+    should "return nil if undefined" do
+      assert_nil @wiki.sidebar
+    end
+    
+    should "return a WikiPage if defined" do
+      page = @wiki.pages.new(:title => 'Sidebar')
+      page.content = WikiContent.new(:text => 'Side bar content for test_show_with_sidebar')
+      page.save!
+      
+      assert_kind_of WikiPage, @wiki.sidebar
+      assert_equal 'Sidebar', @wiki.sidebar.title
+    end
+
   end
 end

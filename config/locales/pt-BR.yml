@@ -26,7 +26,7 @@ pt-BR:
     am: ''
     pm: ''
 
-  # date helper distanci em palavras
+  # date helper distancia em palavras
   datetime:
     distance_in_words:
       half_a_minute: 'meio minuto'
@@ -69,6 +69,9 @@ pt-BR:
       over_x_years:
         one: 'mais de 1 ano'
         other: 'mais de {{count}} anos'
+      almost_x_years:
+        one:   "almost 1 year"
+        other: "almost {{count}} years"
 
   # numeros
   number:
@@ -182,7 +185,7 @@ pt-BR:
   error_scm_command_failed: "Ocorreu um erro ao tentar acessar o repositório: {{value}}"
   error_scm_annotate: "Esta entrada não existe ou não pode ser anotada."
   error_issue_not_found_in_project: 'A tarefa não foi encontrada ou não pertence a este projeto'
-  error_no_tracker_in_project: 'Não há um tipo de tarefa associado a este projeto. favor verificar as configurações do projeto.'
+  error_no_tracker_in_project: 'Não há um tipo de tarefa associado a este projeto. Favor verificar as configurações do projeto.'
   error_no_default_issue_status: 'A situação padrão para tarefa não está definida. Favor verificar sua configuração (Vá em "Administração -> Situação da tarefa").'
 
   mail_subject_lost_password: "Sua senha do {{value}}."
@@ -235,10 +238,9 @@ pt-BR:
   field_fixed_version: Versão
   field_user: Usuário
   field_role: Cargo
-  field_homepage: Página inicial
+  field_homepage: Página do projeto
   field_is_public: Público
   field_parent: Sub-projeto de
-  field_is_in_chlog: Exibir na lista de alterações
   field_is_in_roadmap: Exibir no planejamento
   field_login: Usuário
   field_mail_notification: Notificações por e-mail
@@ -275,7 +277,7 @@ pt-BR:
   field_is_filter: É um filtro
   field_issue_to: Tarefa relacionada
   field_delay: Atraso
-  field_assignable: Tarefas podem ser atribuídas a esta função
+  field_assignable: Tarefas podem ser atribuídas a este papel
   field_redirect_existing_links: Redirecionar links existentes
   field_estimated_hours: Tempo estimado
   field_column_names: Colunas
@@ -294,14 +296,14 @@ pt-BR:
   setting_attachment_max_size: Tamanho máximo do anexo
   setting_issues_export_limit: Limite de exportação das tarefas
   setting_mail_from: E-mail enviado de
-  setting_bcc_recipients: Destinatários com cópia oculta (cco)
-  setting_host_name: Servidor
-  setting_text_formatting: Formato do texto
+  setting_bcc_recipients: Enviar com cópia oculta (cco)
+  setting_host_name: Nome do Servidor e subdomínio
+  setting_text_formatting: Formatação do texto
   setting_wiki_compression: Compactação de histórico do Wiki
-  setting_feeds_limit: Limite do Feed
+  setting_feeds_limit: Número de registros por Feed
   setting_default_projects_public: Novos projetos são públicos por padrão
-  setting_autofetch_changesets: Auto-obter commits
-  setting_sys_api_enabled: Ativa WS para gerenciamento do repositório
+  setting_autofetch_changesets: Obter commits automaticamente
+  setting_sys_api_enabled: Ativa WS para gerenciamento do repositório (SVN)
   setting_commit_ref_keywords: Palavras de referência
   setting_commit_fix_keywords: Palavras de fechamento
   setting_autologin: Auto-login
@@ -313,14 +315,14 @@ pt-BR:
   setting_commit_logs_encoding: Codificação das mensagens de commit
   setting_emails_footer: Rodapé dos e-mails
   setting_protocol: Protocolo
-  setting_per_page_options: Opções de itens por página
-  setting_user_format: Formato de visualização dos usuários
+  setting_per_page_options: Número de itens exibidos por página
+  setting_user_format: Formato de exibição de nome de usuário
   setting_activity_days_default: Dias visualizados na atividade do projeto
   setting_display_subprojects_issues: Visualizar tarefas dos subprojetos nos projetos principais por padrão
-  setting_enabled_scm: Habilitar SCM
+  setting_enabled_scm: SCM habilitados
   setting_mail_handler_api_enabled: Habilitar WS para e-mails de entrada
   setting_mail_handler_api_key: Chave de API
-  setting_sequential_project_identifiers: Gerar identificadores de projeto sequenciais
+  setting_sequential_project_identifiers: Gerar identificadores sequenciais de projeto
 
   project_module_issue_tracking: Gerenciamento de Tarefas
   project_module_time_tracking: Gerenciamento de tempo
@@ -354,10 +356,10 @@ pt-BR:
   label_document_new: Novo documento
   label_document_plural: Documentos
   label_document_added: Documento adicionado
-  label_role: Cargo
-  label_role_plural: Cargos
-  label_role_new: Novo cargo
-  label_role_and_permissions: Cargos e permissões
+  label_role: Papel
+  label_role_plural: Papéis
+  label_role_new: Novo papel
+  label_role_and_permissions: Papéis e permissões
   label_member: Membro
   label_member_new: Novo membro
   label_member_plural: Membros
@@ -432,7 +434,6 @@ pt-BR:
   label_news_latest: Últimas notícias
   label_news_view_all: Ver todas as notícias
   label_news_added: Notícia adicionada
-  label_change_log: Registro de alterações
   label_settings: Configurações
   label_overview: Visão geral
   label_version: Versão
@@ -544,13 +545,8 @@ pt-BR:
   label_wiki_edit_plural: Edições Wiki
   label_wiki_page: Página Wiki
   label_wiki_page_plural: páginas Wiki
-  label_wiki_category: Category
-  label_wiki_category_plural: Categories
-  label_special: Special
-  label_pages_without_category: Pages without category
   label_index_by_title: Índice por título
   label_index_by_date: Índice por data
-  label_index_by_category: Index by category
   label_current_version: Versão atual
   label_preview: Pré-visualizar
   label_feed_plural: Feeds
@@ -570,7 +566,7 @@ pt-BR:
   label_options: Opções
   label_copy_workflow_from: Copiar fluxo de trabalho de
   label_permissions_report: Relatório de permissões
-  label_watched_issues: Tarefas monitoradas
+  label_watched_issues: Tarefas observadas
   label_related_issues: Tarefas relacionadas
   label_applied_status: Situação alterada
   label_loading: Carregando...
@@ -644,9 +640,9 @@ pt-BR:
   label_chronological_order: Em ordem cronológica
   label_reverse_chronological_order: Em ordem cronológica inversa
   label_planning: Planejamento
-  label_incoming_emails: E-mail de entrada
+  label_incoming_emails: E-mails recebidos
   label_generate_key: Gerar uma chave
-  label_issue_watchers: Monitorando
+  label_issue_watchers: Observadores
 
   button_login: Entrar
   button_submit: Enviar
@@ -673,8 +669,8 @@ pt-BR:
   button_sort: Ordenar
   button_log_time: Tempo de trabalho
   button_rollback: Voltar para esta versão
-  button_watch: Monitorar
-  button_unwatch: Parar de Monitorar
+  button_watch: Observar
+  button_unwatch: Parar de observar
   button_reply: Responder
   button_archive: Arquivar
   button_unarchive: Desarquivar
@@ -691,12 +687,12 @@ pt-BR:
   status_registered: registrado
   status_locked: bloqueado
 
-  text_select_mail_notifications: Selecionar ações para ser enviado uma notificação por e-mail
+  text_select_mail_notifications: Ações a serem notificadas por e-mail
   text_regexp_info: ex. ^[A-Z0-9]+$
   text_min_max_length_info: 0 = sem restrição
   text_project_destroy_confirmation: Você tem certeza que deseja excluir este projeto e todos os dados relacionados?
   text_subprojects_destroy_warning: "Seu(s) subprojeto(s): {{value}} também serão excluídos."
-  text_workflow_edit: Selecione um cargo e um tipo de tarefa para editar o fluxo de trabalho
+  text_workflow_edit: Selecione um papel e um tipo de tarefa para editar o fluxo de trabalho
   text_are_you_sure: Você tem certeza?
   text_tip_task_begin_day: tarefa inicia neste dia
   text_tip_task_end_day: tarefa termina neste dia
@@ -708,14 +704,14 @@ pt-BR:
   text_tracker_no_workflow: Sem fluxo de trabalho definido para este tipo.
   text_unallowed_characters: Caracteres não permitidos
   text_comma_separated: Múltiplos valores são permitidos (separados por vírgula).
-  text_issues_ref_in_commit_messages: Referenciar tarefas nas mensagens de commit
+  text_issues_ref_in_commit_messages: Referenciando tarefas nas mensagens de commit
   text_issue_added: "Tarefa {{id}} incluída (por {{author}})."
   text_issue_updated: "Tarefa {{id}} alterada (por {{author}})."
   text_wiki_destroy_confirmation: Você tem certeza que deseja excluir este wiki e TODO o seu conteúdo?
   text_issue_category_destroy_question: "Algumas tarefas ({{count}}) estão atribuídas a esta categoria. O que você deseja fazer?"
   text_issue_category_destroy_assignments: Remover atribuições da categoria
   text_issue_category_reassign_to: Redefinir tarefas para esta categoria
-  text_user_mail_option: "Para projetos (não selecionados), você somente receberá notificações sobre o que você monitora ou está envolvido (ex. tarefas das quais você é o autor ou que estão atribuídas a você)"
+  text_user_mail_option: "Para projetos (não selecionados), você somente receberá notificações sobre o que você está observando ou está envolvido (ex. tarefas das quais você é o autor ou que estão atribuídas a você)"
   text_no_configuration_data: "Os Papéis, tipos de tarefas, situação de tarefas e fluxos de trabalho não foram configurados ainda.\nÉ altamente recomendado carregar as configurações padrão. Você poderá modificar estas configurações assim que carregadas."
   text_load_default_configuration: Carregar a configuração padrão
   text_status_changed_by_changeset: "Aplicado no changeset {{value}}."
@@ -736,7 +732,7 @@ pt-BR:
   default_role_manager: Gerente
   default_role_developper: Desenvolvedor
   default_role_reporter: Informante
-  default_tracker_bug: Problema
+  default_tracker_bug: Defeito
   default_tracker_feature: Funcionalidade
   default_tracker_support: Suporte
   default_issue_status_new: Nova
@@ -761,7 +757,7 @@ pt-BR:
   notice_unable_delete_version: Não foi possível excluir a versão
   label_renamed: renomeado
   label_copied: copiado
-  setting_plain_text_mail: apenas texto sem formatação (sem HTML)
+  setting_plain_text_mail: Usar mensagem sem formatação HTML
   permission_view_files: Ver arquivos
   permission_edit_issues: Editar tarefas
   permission_edit_own_time_entries: Editar o próprio tempo de trabalho
@@ -779,7 +775,7 @@ pt-BR:
   permission_select_project_modules: Selecionar módulos de projeto
   permission_manage_documents: Gerenciar documentos
   permission_edit_wiki_pages: Editar páginas wiki
-  permission_add_issue_watchers: Adicionar monitores
+  permission_add_issue_watchers: Adicionar observadores
   permission_view_gantt: Ver gráfico gantt
   permission_move_issues: Mover tarefas
   permission_manage_issue_relations: Gerenciar relacionamentos de tarefas
@@ -796,7 +792,7 @@ pt-BR:
   permission_manage_members: Gerenciar membros
   permission_edit_messages: Editar mensagens
   permission_delete_issues: Excluir tarefas
-  permission_view_issue_watchers: Ver lista de monitores
+  permission_view_issue_watchers: Ver lista de observadores
   permission_manage_repository: Gerenciar repositório
   permission_commit_access: Acesso de commit
   permission_browse_repository: Pesquisar repositório
@@ -825,7 +821,7 @@ pt-BR:
   field_editable: Editável
   setting_repository_log_display_limit: Número máximo de revisões exibidas no arquivo de log
   setting_file_max_size_displayed: Tamanho máximo dos arquivos textos exibidos inline
-  field_watcher: Observador
+  field_identity_urler: Observador
   setting_openid: Permitir Login e Registro via OpenID
   field_identity_url: OpenID URL
   label_login_with_open_id_option: ou use o OpenID
@@ -849,7 +845,7 @@ pt-BR:
   label_wiki_content_updated: Página wiki atualizada
   mail_body_wiki_content_updated: A página wiki '{{page}}' foi atualizada por {{author}}.
   permission_add_project: Criar projeto
-  setting_new_project_user_role_id: Cargo dado a um usuário não administrador que crie um projeto
+  setting_new_project_user_role_id: Papel atribuído a um usuário não-administrador que cria um projeto
   label_view_all_revisions: Ver todas as revisões
   label_tag: Etiqueta
   label_branch: Ramo
@@ -863,4 +859,69 @@ pt-BR:
   text_journal_added: "{{label}} {{value}} adicionado"
   field_active: Ativo
   enumeration_system_activity: Atividade do sistema
-  permission_delete_issue_watchers: Deletar observadores
+  permission_delete_issue_watchers: Excluir observadores
+  version_status_closed: fechado
+  version_status_locked: travado
+  version_status_open: aberto
+  error_can_not_reopen_issue_on_closed_version: Uma tarefa atribuída a uma versão fechada não pode ser reaberta
+  label_user_anonymous: Anônimo
+  button_move_and_follow: Mover e seguir
+  setting_default_projects_modules: Módulos habilitados por padrão para novos projetos
+  setting_gravatar_default: Imagem-padrão de Gravatar
+  field_sharing: Compartilhamento
+  label_version_sharing_hierarchy: Com a hierarquia do projeto
+  label_version_sharing_system: Com todos os projetos
+  label_version_sharing_descendants: Com sub-projetos
+  label_version_sharing_tree: Com a árvore do projeto
+  label_version_sharing_none: Sem compartilhamento
+  error_can_not_archive_project: Este projeto não pode ser arquivado
+  button_duplicate: Duplicar
+  button_copy_and_follow: Copiar e seguir
+  label_copy_source: Origem
+  setting_issue_done_ratio: Calcular o percentual de conclusão da tarefa
+  setting_issue_done_ratio_issue_status: Usar a situação da tarefa
+  error_issue_done_ratios_not_updated: O pecentual de conclusão das tarefas não foi atualizado.
+  error_workflow_copy_target: Por favor, selecione os tipos de tarefa e os papéis alvo
+  setting_issue_done_ratio_issue_field: Use the issue field
+  label_copy_same_as_target: Mesmo alvo
+  label_copy_target: Alvo
+  notice_issue_done_ratios_updated: Percentual de conslusão atualizados.
+  error_workflow_copy_source: Por favor, selecione um tipo de tarefa e papel de origem
+  label_update_issue_done_ratios: Atualizar percentual de conclusão das tarefas
+  setting_start_of_week: Início da semana
+  field_watcher: Observador
+  permission_view_issues: Ver tarefas
+  label_display_used_statuses_only: Somente exibir situações que são usadas por este tipo de tarefa
+  label_revision_id: Revisão {{value}}
+  label_api_access_key: Chave de acesso a API
+  button_show: Exibir
+  label_api_access_key_created_on: Chave de acesso a API criado a {{value}} atrás
+  label_feeds_access_key: Chave de acesso ao RSS
+  notice_api_access_key_reseted: Sua chave de acesso a API foi redefinida.
+  setting_rest_api_enabled: Habilitar REST web service
+  label_missing_api_access_key: Chave de acesso a API faltando
+  label_missing_feeds_access_key: Chave de acesso ao RSS faltando
+  text_line_separated: Múltiplos valores permitidos (uma linha para cada valor).
+  setting_mail_handler_body_delimiters: Truncar e-mails após uma destas linhas
+  permission_add_subprojects: Criar subprojetos
+  label_subproject_new: Novo subprojeto
+  text_own_membership_delete_confirmation: |-
+    Você está para excluir algumas de suas próprias permissões e pode não mais estar apto a editar este projeto após esta operação.
+    Você tem certeza que deseja continuar?
+  label_close_versions: Fechar versões concluídas
+  label_board_sticky: Marcado
+  label_board_locked: Travado
+  label_change_log: Registro de alterações
+  permission_export_wiki_pages: Exportar páginas wiki
+  setting_cache_formatted_text: Realizar cache de texto formatado
+  permission_manage_project_activities: Gerenciar atividades do projeto
+  error_unable_delete_issue_status: Impossível excluir situação da tarefa
+  label_profile: Perfil
+  permission_manage_subtasks: Gerenciar subtarefas
+  field_parent_issue: Tarefa pai
+  label_subtask_plural: Subtarefas
+  label_project_copy_notifications: Enviar notificações por e-mail ao copiar projeto
+  error_can_not_delete_custom_field: Não foi possível excluir o campo personalizado
+  error_unable_to_connect: Não foi possível conectar ({{value}})
+  error_can_not_remove_role: Este papel está em uso e não pode ser excluído.
+  error_can_not_delete_tracker: Este tipo de tarefa está atribuído a alguma(s) tarefa(s) e não pode ser excluído.

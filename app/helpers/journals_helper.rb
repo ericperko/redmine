@@ -16,13 +16,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 module JournalsHelper
-  def render_notes(journal, options={})
+  def render_notes(issue, journal, options={})
     content = ''
-    editable = journal.editable_by?(User.current)
+    editable = User.current.logged? && (User.current.allowed_to?(:edit_issue_notes, issue.project) || (journal.user == User.current && User.current.allowed_to?(:edit_own_issue_notes, issue.project)))
     links = []
     if !journal.notes.blank?
       links << link_to_remote(image_tag('comment.png'),
-                              { :url => {:controller => 'issues', :action => 'reply', :id => journal.journalized, :journal_id => journal} },
+                              { :url => {:controller => 'issues', :action => 'reply', :id => issue, :journal_id => journal} },
                               :title => l(:button_quote)) if options[:reply_links]
       links << link_to_in_place_notes_editor(image_tag('edit.png'), "journal-#{journal.id}-notes", 
                                              { :controller => 'journals', :action => 'edit', :id => journal },
@@ -32,7 +32,6 @@ module JournalsHelper
     content << textilizable(journal, :notes)
     css_classes = "wiki"
     css_classes << " editable" if editable
-    css_classes << " gravatar-margin" if Setting.gravatar_enabled?
     content_tag('div', content, :id => "journal-#{journal.id}-notes", :class => css_classes)
   end
   

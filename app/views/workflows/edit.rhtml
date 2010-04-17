@@ -11,8 +11,12 @@
 
   <label><%=l(:label_tracker)%>:</label>
 	<%= select_tag 'tracker_id', options_from_collection_for_select(@trackers, "id", "name", @tracker && @tracker.id) %>
-	
-	<%= submit_tag l(:button_edit), :name => nil %>
+  
+  <%= hidden_field_tag 'used_statuses_only', '0' %>
+  <label><%= check_box_tag 'used_statuses_only', '1', @used_statuses_only %> <%= l(:label_display_used_statuses_only) %></label>
+</p>
+<p>
+<%= submit_tag l(:button_edit), :name => nil %>
 </p>
 <% end %>
 
@@ -21,6 +25,7 @@
 <% form_tag({}, :id => 'workflow_form' ) do %>
 <%= hidden_field_tag 'tracker_id', @tracker.id %>
 <%= hidden_field_tag 'role_id', @role.id %>
+<div class="autoscroll">
 <table class="list">
 <thead>
 	<tr>
@@ -48,6 +53,7 @@
 	<% end %>
 </tbody>
 </table>
+</div>
 <p><%= check_all_links 'workflow_form' %></p>
 
 <%= submit_tag l(:button_save) %>

@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
   include Redmine::I18n
 
   layout 'base'
+  exempt_from_layout 'builder'
   
   # Remove broken cookie after upgrade from 0.8.x (#4292)
   # See https://rails.lighthouseapp.com/projects/8994/tickets/3360
@@ -30,7 +31,8 @@ class ApplicationController < ActionController::Base
   def delete_broken_cookies
     if cookies['_redmine_session'] && cookies['_redmine_session'] !~ /--/
       cookies.delete '_redmine_session'    
-      redirect_to home_path and return false
+      redirect_to home_path
+      return false
     end
   end
   
@@ -44,7 +46,7 @@ class ApplicationController < ActionController::Base
   include Redmine::MenuManager::MenuController
   helper Redmine::MenuManager::MenuHelper
   
-  REDMINE_SUPPORTED_SCM.each do |scm|
+  Redmine::Scm::Base.all.each do |scm|
     require_dependency "repository/#{scm.underscore}"
   end
 
@@ -69,9 +71,19 @@ class ApplicationController < ActionController::Base
     elsif params[:format] == 'atom' && params[:key] && accept_key_auth_actions.include?(params[:action])
       # RSS key authentication does not start a session
       User.find_by_rss_key(params[:key])
+    elsif Setting.rest_api_enabled? && ['xml', 'json'].include?(params[:format])
+      if params[:key].present? && accept_key_auth_actions.include?(params[:action])
+        # Use API key
+        User.find_by_api_key(params[:key])
+      else
+        # HTTP Basic, either username/password or API key/random
+        authenticate_with_http_basic do |username, password|
+          User.try_to_login(username, password) || User.find_by_api_key(username)
+        end
+      end
     end
   end
-  
+
   # Sets the logged in user
   def logged_user=(user)
     reset_session
@@ -113,7 +125,12 @@ class ApplicationController < ActionController::Base
       else
         url = url_for(:controller => params[:controller], :action => params[:action], :id => params[:id], :project_id => params[:project_id])
       end
-      redirect_to :controller => "account", :action => "login", :back_url => url
+      respond_to do |format|
+        format.html { redirect_to :controller => "account", :action => "login", :back_url => url }
+        format.atom { redirect_to :controller => "account", :action => "login", :back_url => url }
+        format.xml { head :unauthorized }
+        format.json { head :unauthorized }
+      end
       return false
     end
     true
@@ -142,7 +159,37 @@ class ApplicationController < ActionController::Base
   def authorize_global(ctrl = params[:controller], action = params[:action], global = true)
     authorize(ctrl, action, global)
   end
-  
+
+  # Find project of id params[:id]
+  def find_project
+    @project = Project.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
+  # Finds and sets @project based on @object.project
+  def find_project_from_association
+    render_404 unless @object.present?
+    
+    @project = @object.project
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
+  def find_model_object
+    model = self.class.read_inheritable_attribute('model_object')
+    if model
+      @object = model.find(params[:id])
+      self.instance_variable_set('@' + controller_name.singularize, @object) if @object
+    end
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+
+  def self.model_object(model)
+    write_inheritable_attribute('model_object', model)
+  end
+    
   # make sure that the user is a member of the project (or admin) if project is private
   # used as a before_filter for actions that do not require any particular permission on the project
   def check_project_privacy
@@ -166,7 +213,8 @@ class ApplicationController < ActionController::Base
         uri = URI.parse(back_url)
         # do not redirect user to another host or to the login or register page
         if (uri.relative? || (uri.host == request.host)) && !uri.path.match(%r{/(login|account/register)})
-          redirect_to(back_url) and return
+          redirect_to(back_url)
+          return
         end
       rescue URI::InvalidURIError
         # redirect to default
@@ -177,21 +225,41 @@ class ApplicationController < ActionController::Base
   
   def render_403
     @project = nil
-    render :template => "common/403", :layout => !request.xhr?, :status => 403
+    respond_to do |format|
+      format.html { render :template => "common/403", :layout => (request.xhr? ? false : 'base'), :status => 403 }
+      format.atom { head 403 }
+      format.xml { head 403 }
+      format.json { head 403 }
+    end
     return false
   end
     
   def render_404
-    render :template => "common/404", :layout => !request.xhr?, :status => 404
+    respond_to do |format|
+      format.html { render :template => "common/404", :layout => !request.xhr?, :status => 404 }
+      format.atom { head 404 }
+      format.xml { head 404 }
+      format.json { head 404 }
+    end
     return false
   end
   
   def render_error(msg)
-    flash.now[:error] = msg
-    render :text => '', :layout => !request.xhr?, :status => 500
+    respond_to do |format|
+      format.html { 
+        flash.now[:error] = msg
+        render :text => '', :layout => !request.xhr?, :status => 500
+      }
+      format.atom { head 500 }
+      format.xml { head 500 }
+      format.json { head 500 }
+    end
   end
   
   def invalid_authenticity_token
+    if api_request?
+      logger.error "Form authenticity token is missing or is invalid. API calls must include a proper Content-type header (text/xml or text/json)."
+    end
     render_error "Invalid form authenticity token."
   end
   
@@ -212,27 +280,6 @@ class ApplicationController < ActionController::Base
     self.class.read_inheritable_attribute('accept_key_auth_actions') || []
   end
   
-  # TODO: move to model
-  def attach_files(obj, attachments)
-    attached = []
-    unsaved = []
-    if attachments && attachments.is_a?(Hash)
-      attachments.each_value do |attachment|
-        file = attachment['file']
-        next unless file && file.size > 0
-        a = Attachment.create(:container => obj, 
-                              :file => file,
-                              :description => attachment['description'].to_s.strip,
-                              :author => User.current)
-        a.new_record? ? (unsaved << a) : (attached << a)
-      end
-      if unsaved.any?
-        flash[:warning] = l(:warning_attachments_not_saved, unsaved.size)
-      end
-    end
-    attached
-  end
-
   # Returns the number of objects that should be displayed
   # on the paginated list
   def per_page_option
@@ -272,5 +319,14 @@ class ApplicationController < ActionController::Base
   # Returns a string that can be used as filename value in Content-Disposition header
   def filename_for_content_disposition(name)
     request.env['HTTP_USER_AGENT'] =~ %r{MSIE} ? ERB::Util.url_encode(name) : name
+  end
+  
+  def api_request?
+    %w(xml json).include? params[:format]
+  end
+
+  # Renders a warning flash if obj has unsaved attachments
+  def render_attachment_warning_if_needed(obj)
+    flash[:warning] = l(:warning_attachments_not_saved, obj.unsaved_attachments.size) if obj.unsaved_attachments.present?
   end
 end

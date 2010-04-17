@@ -23,6 +23,7 @@ class Project < ActiveRecord::Base
   # Specific overidden Activities
   has_many :time_entry_activities
   has_many :members, :include => [:user, :roles], :conditions => "#{User.table_name}.type='User' AND #{User.table_name}.status=#{User::STATUS_ACTIVE}"
+  has_many :memberships, :class_name => 'Member'
   has_many :member_principals, :class_name => 'Member', 
                                :include => :principal,
                                :conditions => "#{Principal.table_name}.type='Group' OR (#{Principal.table_name}.type='User' AND #{Principal.table_name}.status=#{User::STATUS_ACTIVE})"
@@ -50,14 +51,14 @@ class Project < ActiveRecord::Base
                           :join_table => "#{table_name_prefix}custom_fields_projects#{table_name_suffix}",
                           :association_foreign_key => 'custom_field_id'
                           
-  acts_as_nested_set :order => 'name', :dependent => :destroy
+  acts_as_nested_set :order => 'name'
   acts_as_attachable :view_permission => :view_files,
                      :delete_permission => :manage_files
 
   acts_as_customizable
-  acts_as_searchable :columns => ['name', 'description'], :project_key => 'id', :permission => nil
+  acts_as_searchable :columns => ['name', 'identifier', 'description'], :project_key => 'id', :permission => nil
   acts_as_event :title => Proc.new {|o| "#{l(:label_project)}: #{o.name}"},
-                :url => Proc.new {|o| {:controller => 'projects', :action => 'show', :id => o.id}},
+                :url => Proc.new {|o| {:controller => 'projects', :action => 'show', :id => o}},
                 :author => nil
 
   attr_protected :status, :enabled_module_names
@@ -73,7 +74,7 @@ class Project < ActiveRecord::Base
   # reserved words
   validates_exclusion_of :identifier, :in => %w( new )
 
-  before_destroy :delete_all_members
+  before_destroy :delete_all_members, :destroy_children
 
   named_scope :has_module, lambda { |mod| { :conditions => ["#{Project.table_name}.id IN (SELECT em.project_id FROM #{EnabledModule.table_name} em WHERE em.name=?)", mod.to_s] } }
   named_scope :active, { :conditions => "#{Project.table_name}.status = #{STATUS_ACTIVE}"}
@@ -246,7 +247,11 @@ class Project < ActiveRecord::Base
   # by the current user
   def allowed_parents
     return @allowed_parents if @allowed_parents
-    @allowed_parents = (Project.find(:all, :conditions => Project.allowed_to_condition(User.current, :add_project, :member => true)) - self_and_descendants)
+    @allowed_parents = Project.find(:all, :conditions => Project.allowed_to_condition(User.current, :add_subprojects))
+    @allowed_parents = @allowed_parents - self_and_descendants
+    if User.current.allowed_to?(:add_project, nil, :global => true) || (!new_record? && parent.nil?)
+      @allowed_parents << nil
+    end
     unless parent.nil? || @allowed_parents.empty? || @allowed_parents.include?(parent)
       @allowed_parents << parent
     end
@@ -494,17 +499,36 @@ class Project < ActiveRecord::Base
   
   private
   
+  # Destroys children before destroying self
+  def destroy_children
+    children.each do |child|
+      child.destroy
+    end
+  end
+  
   # Copies wiki from +project+
   def copy_wiki(project)
     # Check that the source project has a wiki first
     unless project.wiki.nil?
       self.wiki ||= Wiki.new
       wiki.attributes = project.wiki.attributes.dup.except("id", "project_id")
+      wiki_pages_map = {}
       project.wiki.pages.each do |page|
+        # Skip pages without content
+        next if page.content.nil?
         new_wiki_content = WikiContent.new(page.content.attributes.dup.except("id", "page_id", "updated_on"))
         new_wiki_page = WikiPage.new(page.attributes.dup.except("id", "wiki_id", "created_on", "parent_id"))
         new_wiki_page.content = new_wiki_content
         wiki.pages << new_wiki_page
+        wiki_pages_map[page.id] = new_wiki_page
+      end
+      wiki.save
+      # Reproduce page hierarchy
+      project.wiki.pages.each do |page|
+        if page.parent_id && wiki_pages_map[page.id]
+          wiki_pages_map[page.id].parent = wiki_pages_map[page.parent_id]
+          wiki_pages_map[page.id].save
+        end
       end
     end
   end
@@ -533,9 +557,12 @@ class Project < ActiveRecord::Base
     # value.  Used to map the two togeather for issue relations.
     issues_map = {}
     
-    project.issues.each do |issue|
+    # Get issues sorted by root_id, lft so that parent issues
+    # get copied before their children
+    project.issues.find(:all, :order => 'root_id, lft').each do |issue|
       new_issue = Issue.new
       new_issue.copy_from(issue)
+      new_issue.project = self
       # Reassign fixed_versions by name, since names are unique per
       # project and the versions for self are not yet saved
       if issue.fixed_version
@@ -546,6 +573,13 @@ class Project < ActiveRecord::Base
       if issue.category
         new_issue.category = self.issue_categories.select {|c| c.name == issue.category.name}.first
       end
+      # Parent issue
+      if issue.parent_id
+        if copied_parent = issues_map[issue.parent_id]
+          new_issue.parent_issue_id = copied_parent.id
+        end
+      end
+      
       self.issues << new_issue
       issues_map[issue.id] = new_issue
     end
@@ -579,10 +613,14 @@ class Project < ActiveRecord::Base
 
   # Copies members from +project+
   def copy_members(project)
-    project.members.each do |member|
+    project.memberships.each do |member|
       new_member = Member.new
       new_member.attributes = member.attributes.dup.except("id", "project_id", "created_on")
-      new_member.role_ids = member.role_ids.dup
+      # only copy non inherited roles
+      # inherited roles will be added when copying the group membership
+      role_ids = member.member_roles.reject(&:inherited?).collect(&:role_id)
+      next if role_ids.empty?
+      new_member.role_ids = role_ids
       new_member.project = self
       self.members << new_member
     end
@@ -611,7 +649,7 @@ class Project < ActiveRecord::Base
   
   def allowed_permissions
     @allowed_permissions ||= begin
-      module_names = enabled_modules.collect {|m| m.name}
+      module_names = enabled_modules.all(:select => :name).collect {|m| m.name}
       Redmine::AccessControl.modules_permissions(module_names).collect {|p| p.name}
     end
   end
@@ -622,8 +660,8 @@ class Project < ActiveRecord::Base
 
   # Returns all the active Systemwide and project specific activities
   def active_activities
-    overridden_activity_ids = self.time_entry_activities.active.collect(&:parent_id)
-
+    overridden_activity_ids = self.time_entry_activities.collect(&:parent_id)
+    
     if overridden_activity_ids.empty?
       return TimeEntryActivity.shared.active
     else
@@ -653,7 +691,7 @@ class Project < ActiveRecord::Base
     else
       return TimeEntryActivity.shared.active.
         find(:all,
-             :conditions => ["id NOT IN (?)", self.time_entry_activities.active.collect(&:parent_id)]) +
+             :conditions => ["id NOT IN (?)", self.time_entry_activities.collect(&:parent_id)]) +
         self.time_entry_activities.active
     end
   end

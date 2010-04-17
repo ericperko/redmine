@@ -70,6 +70,17 @@ class WikiControllerTest < ActionController::TestCase
                                                :alt => 'This is a logo' }
   end
   
+  def test_show_with_sidebar
+    page = Project.find(1).wiki.pages.new(:title => 'Sidebar')
+    page.content = WikiContent.new(:text => 'Side bar content for test_show_with_sidebar')
+    page.save!
+    
+    get :index, :id => 1, :page => 'Another_page'
+    assert_response :success
+    assert_tag :tag => 'div', :attributes => {:id => 'sidebar'},
+                              :content => /Side bar content for test_show_with_sidebar/
+  end
+  
   def test_show_unexistent_page_without_edit_right
     get :index, :id => 1, :page => 'Unexistent page'
     assert_response 404
@@ -105,6 +116,23 @@ class WikiControllerTest < ActionController::TestCase
     assert !page.new_record?
     assert_not_nil page.content
     assert_equal 'Created the page', page.content.comments
+  end
+  
+  def test_create_page_with_attachments
+    @request.session[:user_id] = 2
+    assert_difference 'WikiPage.count' do
+      assert_difference 'Attachment.count' do
+        post :edit, :id => 1,
+                    :page => 'New page',
+                    :content => {:comments => 'Created the page',
+                                 :text => "h1. New page\n\nThis is a new page",
+                                 :version => 0},
+                    :attachments => {'1' => {'file' => uploaded_test_file('testfile.txt', 'text/plain')}}
+      end
+    end
+    page = Project.find(1).wiki.find_page('New page')
+    assert_equal 1, page.attachments.count
+    assert_equal 'testfile.txt', page.attachments.first.filename
   end
   
   def test_preview_routing

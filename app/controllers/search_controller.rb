@@ -48,7 +48,7 @@ class SearchController < ApplicationController
       return
     end
     
-    @object_types = %w(issues news documents changesets wiki_pages messages projects)
+    @object_types = Redmine::Search.available_search_types.dup
     if projects_to_search.is_a? Project
       # don't search projects
       @object_types.delete('projects')
@@ -62,21 +62,19 @@ class SearchController < ApplicationController
     # extract tokens from the question
     # eg. hello "bye bye" => ["hello", "bye bye"]
     @tokens = @question.scan(%r{((\s|^)"[\s\w]+"(\s|$)|\S+)}).collect {|m| m.first.gsub(%r{(^\s*"\s*|\s*"\s*$)}, '')}
-    # tokens must be at least 3 character long
-    @tokens = @tokens.uniq.select {|w| w.length > 2 }
+    # tokens must be at least 2 characters long
+    @tokens = @tokens.uniq.select {|w| w.length > 1 }
     
     if !@tokens.empty?
       # no more than 5 tokens to search for
-      @tokens.slice! 5..-1 if @tokens.size > 5
-      # strings used in sql like statement
-      like_tokens = @tokens.collect {|w| "%#{w.downcase}%"}      
+      @tokens.slice! 5..-1 if @tokens.size > 5  
       
       @results = []
       @results_by_type = Hash.new {|h,k| h[k] = 0}
       
       limit = 10
       @scope.each do |s|
-        r, c = s.singularize.camelcase.constantize.search(like_tokens, projects_to_search,
+        r, c = s.singularize.camelcase.constantize.search(@tokens, projects_to_search,
           :all_words => @all_words,
           :titles_only => @titles_only,
           :limit => (limit+1),

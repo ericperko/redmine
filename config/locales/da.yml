@@ -62,6 +62,9 @@ da:
       over_x_years:
         one:  "mere end et år"
         other: "mere end {{count}} år"
+      almost_x_years:
+        one:   "næsten 1 år"
+        other: "næsten {{count}} år"
 
   number:
     format:
@@ -224,7 +227,6 @@ da:
   field_homepage: Hjemmeside
   field_is_public: Offentlig
   field_parent: Underprojekt af
-  field_is_in_chlog: Sager vist i ændringer
   field_is_in_roadmap: Sager vist i roadmap
   field_login: Login
   field_mail_notification: Email-påmindelser
@@ -313,9 +315,9 @@ da:
   label_project_new: Nyt projekt
   label_project_plural: Projekter
   label_x_projects:
-    zero:  no projects
-    one:   1 project
-    other: "{{count}} projects"
+    zero:  Ingen projekter
+    one:   1 projekt
+    other: "{{count}} projekter"
   label_project_all: Alle projekter
   label_project_latest: Seneste projekter
   label_issue: Sag
@@ -405,7 +407,6 @@ da:
   label_news_latest: Seneste nyheder
   label_news_view_all: Vis alle nyheder
   label_news_added: Nyhed tilføjet
-  label_change_log: Ændringer
   label_settings: Indstillinger
   label_overview: Oversigt
   label_version: Udgave
@@ -517,13 +518,8 @@ da:
   label_wiki_edit_plural: Wiki ændringer
   label_wiki_page: Wiki side
   label_wiki_page_plural: Wiki sider
-  label_wiki_category: Category
-  label_wiki_category_plural: Categories
-  label_special: Special
-  label_pages_without_category: Pages without category
   label_index_by_title: Indhold efter titel
   label_index_by_date: Indhold efter dato
-  label_index_by_category: Index by category
   label_current_version: Nuværende version
   label_preview: Forhåndsvisning
   label_feed_plural: Feeds
@@ -693,7 +689,7 @@ da:
   default_tracker_feature: Feature
   default_tracker_support: Support
   default_issue_status_new: Ny
-  default_issue_status_in_progress: In Progress
+  default_issue_status_in_progress: Igangværende
   default_issue_status_resolved: Løst
   default_issue_status_feedback: Feedback
   default_issue_status_closed: Lukket
@@ -854,7 +850,70 @@ da:
   label_group: Grupper
   label_group_new: Ny gruppe
   label_time_entry_plural: Anvendt tid
-  text_journal_added: "{{label}} {{value}} added"
-  field_active: Active
-  enumeration_system_activity: System Activity
-  permission_delete_issue_watchers: Delete watchers
+  text_journal_added: "{{label}} {{value}} tilføjet"
+  field_active: Aktiv
+  enumeration_system_activity: System Aktivitet
+  permission_delete_issue_watchers: Slet overvågere
+  version_status_closed: lukket
+  version_status_locked: låst
+  version_status_open: åben
+  error_can_not_reopen_issue_on_closed_version: En sag tildelt en lukket version, kan ikke genåbnes
+  label_user_anonymous: Anonym
+  button_move_and_follow: Flyt og overvåg
+  setting_default_projects_modules: Standard moduler, aktiveret for nye projekter
+  setting_gravatar_default: Standard Gravatar billede
+  field_sharing: Delning
+  label_version_sharing_hierarchy: Med projekt hierarki
+  label_version_sharing_system: Med alle projekter
+  label_version_sharing_descendants: Med under projekter
+  label_version_sharing_tree: Med projekt træ
+  label_version_sharing_none: Ikke delt
+  error_can_not_archive_project: Dette projekt kan ikke arkiveres
+  button_duplicate: Kopier
+  button_copy_and_follow: Kopier og overvåg
+  label_copy_source: Kilde
+  setting_issue_done_ratio: Beregn sagsløsning ratio
+  setting_issue_done_ratio_issue_status: Benyt sags status
+  error_issue_done_ratios_not_updated: Sagsløsnings ratio, ikke opdateret.
+  error_workflow_copy_target: Vælg venligst mål tracker og rolle(r)
+  setting_issue_done_ratio_issue_field: Benyt sags felt
+  label_copy_same_as_target: Samme som mål
+  label_copy_target: Mål
+  notice_issue_done_ratios_updated: Sagsløsnings ratio opdateret.
+  error_workflow_copy_source: Vælg venligst en kilde tracker eller rolle
+  label_update_issue_done_ratios: Opdater sagsløsnings ratio
+  setting_start_of_week: Start kalendre på
+  permission_view_issues: Vis sager
+  label_display_used_statuses_only: Vis kun statuser der er benyttet af denne tracker
+  label_revision_id: Revision {{value}}
+  label_api_access_key: API nøgle
+  label_api_access_key_created_on: API nøgle genereret {{value}} siden
+  label_feeds_access_key: RSS nøgle
+  notice_api_access_key_reseted: Din API nøgle er nulstillet.
+  setting_rest_api_enabled: Aktiver REST web service
+  label_missing_api_access_key: Mangler en API nøgle
+  label_missing_feeds_access_key: Mangler en RSS nøgle
+  button_show: Vis
+  text_line_separated: Flere væredier tilladt (en linje for hver værdi).
+  setting_mail_handler_body_delimiters: Trunker emails efter en af disse linjer
+  permission_add_subprojects: Lav underprojekter
+  label_subproject_new: Nyt underprojekt
+  text_own_membership_delete_confirmation: |-
+    Du er ved at fjerne en eller flere af dine rettigheder, og kan muligvis ikke redigere projektet bagefter.
+    Er du sikker på du ønsker at fortsætte?
+  label_close_versions: Luk færdige versioner
+  label_board_sticky: Sticky
+  label_board_locked: Låst
+  permission_export_wiki_pages: Eksporter wiki sider
+  setting_cache_formatted_text: Cache formatteret tekst
+  permission_manage_project_activities: Administrer projekt aktiviteter
+  error_unable_delete_issue_status: Det var ikke muligt at slette sags status
+  label_profile: Profil
+  permission_manage_subtasks: Administrer under opgaver
+  field_parent_issue: Hoved opgave
+  label_subtask_plural: Under opgaver
+  label_project_copy_notifications: Send email notifikationer, mens projektet kopieres
+  error_can_not_delete_custom_field: Unable to delete custom field
+  error_unable_to_connect: Unable to connect ({{value}})
+  error_can_not_remove_role: This role is in use and can not be deleted.
+  error_can_not_delete_tracker: This tracker contains issues and can't be deleted.

@@ -182,7 +182,7 @@ module Redmine
         end
         
         def self.shellout(cmd, &block)
-          logger.debug "Shelling out: #{cmd}" if logger && logger.debug?
+          logger.debug "Shelling out: #{strip_credential(cmd)}" if logger && logger.debug?
           if Rails.env == 'development'
             # Capture stderr when running in dev environment
             cmd = "#{cmd} 2>>#{RAILS_ROOT}/log/scm.stderr.log"
@@ -286,21 +286,23 @@ module Redmine
         end
 
         def save(repo)
-          if repo.changesets.find_by_scmid(scmid.to_s).nil?
-            changeset = Changeset.create!(
+          Changeset.transaction do
+            changeset = Changeset.new(
               :repository => repo,
               :revision => identifier,
               :scmid => scmid,
               :committer => author, 
               :committed_on => time,
               :comments => message)
-
-            paths.each do |file|
-              Change.create!(
-                :changeset => changeset,
-                :action => file[:action],
-                :path => file[:path])
-            end   
+            
+            if changeset.save
+              paths.each do |file|
+                Change.create(
+                  :changeset => changeset,
+                  :action => file[:action],
+                  :path => file[:path])
+              end
+            end
           end
         end
       end

@@ -16,6 +16,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class UsersController < ApplicationController
+  layout 'admin'
+  
   before_filter :require_admin, :except => :show
 
   helper :sort
@@ -48,7 +50,7 @@ class UsersController < ApplicationController
   end
   
   def show
-    @user = User.active.find(params[:id])
+    @user = User.find(params[:id])
     @custom_values = @user.custom_values
     
     # show only public projects and private projects that the logged in user is also a member of
@@ -59,10 +61,14 @@ class UsersController < ApplicationController
     events = Redmine::Activity::Fetcher.new(User.current, :author => @user).events(nil, nil, :limit => 10)
     @events_by_day = events.group_by(&:event_date)
     
-    if @user != User.current && !User.current.admin? && @memberships.empty? && events.empty?
-      render_404 and return
+    unless User.current.admin?
+      if !@user.active? || (@user != User.current  && @memberships.empty? && events.empty?)
+        render_404
+        return
+      end
     end
-    
+    render :layout => 'base'
+
   rescue ActiveRecord::RecordNotFound
     render_404
   end
@@ -78,7 +84,9 @@ class UsersController < ApplicationController
       if @user.save
         Mailer.deliver_account_information(@user, params[:password]) if params[:send_information]
         flash[:notice] = l(:notice_successful_create)
-        redirect_to :controller => 'users', :action => 'edit', :id => @user
+        redirect_to(params[:continue] ? {:controller => 'users', :action => 'add'} : 
+                                        {:controller => 'users', :action => 'edit', :id => @user})
+        return
       end
     end
     @auth_sources = AuthSource.find(:all)
@@ -112,8 +120,7 @@ class UsersController < ApplicationController
   
   def edit_membership
     @user = User.find(params[:id])
-    @membership = params[:membership_id] ? Member.find(params[:membership_id]) : Member.new(:principal => @user)
-    @membership.attributes = params[:membership]
+    @membership = Member.edit_membership(params[:membership_id], params[:membership], @user)
     @membership.save if request.post?
     respond_to do |format|
        format.html { redirect_to :controller => 'users', :action => 'edit', :id => @user, :tab => 'memberships' }

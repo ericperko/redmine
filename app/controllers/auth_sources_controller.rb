@@ -16,20 +16,17 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class AuthSourcesController < ApplicationController
+  layout 'admin'
+  
   before_filter :require_admin
-
-  def index
-    list
-    render :action => 'list' unless request.xhr?
-  end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
 
-  def list
+  def index
     @auth_source_pages, @auth_sources = paginate :auth_sources, :per_page => 10
-    render :action => "list", :layout => false if request.xhr?
+    render :action => "index", :layout => false if request.xhr?
   end
 
   def new
@@ -40,7 +37,7 @@ class AuthSourcesController < ApplicationController
     @auth_source = AuthSourceLdap.new(params[:auth_source])
     if @auth_source.save
       flash[:notice] = l(:notice_successful_create)
-      redirect_to :action => 'list'
+      redirect_to :action => 'index'
     else
       render :action => 'new'
     end
@@ -54,7 +51,7 @@ class AuthSourcesController < ApplicationController
     @auth_source = AuthSource.find(params[:id])
     if @auth_source.update_attributes(params[:auth_source])
       flash[:notice] = l(:notice_successful_update)
-      redirect_to :action => 'list'
+      redirect_to :action => 'index'
     else
       render :action => 'edit'
     end
@@ -66,9 +63,9 @@ class AuthSourcesController < ApplicationController
       @auth_method.test_connection
       flash[:notice] = l(:notice_successful_connection)
     rescue => text
-      flash[:error] = "Unable to connect (#{text})"
+      flash[:error] = l(:error_unable_to_connect, text.message)
     end
-    redirect_to :action => 'list'
+    redirect_to :action => 'index'
   end
 
   def destroy
@@ -77,6 +74,6 @@ class AuthSourcesController < ApplicationController
       @auth_source.destroy
       flash[:notice] = l(:notice_successful_delete)
     end
-    redirect_to :action => 'list'
+    redirect_to :action => 'index'
   end
 end

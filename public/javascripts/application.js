@@ -114,7 +114,7 @@ function displayTabsButtons() {
 				tabsWidth += lis[i].getWidth() + 6;
 			}
 		}
-		if (tabsWidth < el.getWidth() - 60) {
+		if ((tabsWidth < el.getWidth() - 60) && (lis[0].visible())) {
 			el.down('div.tabs-buttons').hide();
 		} else {
 			el.down('div.tabs-buttons').show();
@@ -124,7 +124,7 @@ function displayTabsButtons() {
 
 function setPredecessorFieldsVisibility() {
     relationType = $('relation_relation_type');
-    if (relationType && relationType.value == "precedes") {
+    if (relationType && (relationType.value == "precedes" || relationType.value == "follows")) {
         Element.show('predecessor_fields');
     } else {
         Element.hide('predecessor_fields');
@@ -194,6 +194,18 @@ function randomKey(size) {
 	return key;
 }
 
+function observeParentIssueField(url) {
+  new Ajax.Autocompleter('issue_parent_issue_id',
+                         'parent_issue_candidates',
+                         url,
+                         { minChars: 3,
+                           frequency: 0.5,
+                           paramName: 'q',
+                           updateElement: function(value) {
+                             document.getElementById('issue_parent_issue_id').value = value.id;
+                           }});
+}
+
 /* shows and hides ajax indicator */
 Ajax.Responders.register({
     onCreate: function(){
@@ -206,4 +218,10 @@ Ajax.Responders.register({
             Element.hide('ajax-indicator');
         }
     }
+});
+
+Event.observe(window, 'load', function() {
+  $$('.hol').each(function(el) {
+  	el.hide();
+	});
 });
