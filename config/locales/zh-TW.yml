@@ -246,8 +246,6 @@
   error_issue_not_found_in_project: '該項目不存在或不屬於此專案'
   error_no_tracker_in_project: '此專案尚未指定追蹤標籤。請檢查專案的設定資訊。'
   error_no_default_issue_status: '尚未定義項目狀態的預設值。請您前往「網站管理」->「項目狀態清單」頁面，檢查相關組態設定。'
-  error_can_not_reopen_issue_on_closed_version: '指派給「已結束」版本的項目，無法再將其狀態變更為「進行中」'
-  error_can_not_archive_project: 此專案無法被歸檔
   
   warning_attachments_not_saved: "{{count}} 個附加檔案無法儲存。"
   
@@ -359,7 +357,6 @@
   field_identity_url: OpenID 網址
   field_content: 內容
   field_group_by: 結果分組方式
-  field_sharing: 共用
   
   setting_app_title: 標題
   setting_app_subtitle: 副標題
@@ -399,15 +396,13 @@
   setting_mail_handler_api_key: API 金鑰
   setting_sequential_project_identifiers: 循序產生專案識別碼
   setting_gravatar_enabled: 啟用 Gravatar 全球認證大頭像
-  setting_gravatar_default: 預設全球認證大頭像圖片
   setting_diff_max_lines_displayed: 差異顯示行數之最大值
   setting_file_max_size_displayed: 檔案內容顯示大小之最大值
   setting_repository_log_display_limit: 版次顯示數目之最大值
   setting_openid: 允許使用 OpenID 登入與註冊
   setting_password_min_length: 密碼最小長度
   setting_new_project_user_role_id: 管理者以外之用戶建立新專案時，將被指派的角色
-  setting_default_projects_modules: 新專案預設啟用的模組
-
+  
   permission_add_project: 建立專案
   permission_edit_project: 編輯專案
   permission_select_project_modules: 選擇專案模組
@@ -471,7 +466,6 @@
   label_user: 用戶
   label_user_plural: 用戶清單
   label_user_new: 建立新用戶
-  label_user_anonymous: 匿名用戶
   label_project: 專案
   label_project_new: 建立新專案
   label_project_plural: 專案清單
@@ -693,11 +687,11 @@
   label_wiki_page_plural: Wiki 網頁
   label_wiki_category: Category
   label_wiki_category_plural: Categories
-  label_wiki_index_by_category: Index by category
   label_special: Special
   label_pages_without_category: Pages without category
   label_index_by_title: 依標題索引
   label_index_by_date: 依日期索引
+  label_index_by_category: Index by category
   label_current_version: 現行版本
   label_preview: 預覽
   label_feed_plural: Feeds
@@ -807,11 +801,6 @@
   label_group_plural: 群組清單
   label_group_new: 建立新群組
   label_time_entry_plural: 耗用工時
-  label_version_sharing_none: 不共用
-  label_version_sharing_descendants: 與子專案共用
-  label_version_sharing_hierarchy: 與專案階層架構共用
-  label_version_sharing_tree: 與專案樹共用
-  label_version_sharing_system: 與全部的專案共用
 
   button_login: 登入
   button_submit: 送出
@@ -833,7 +822,6 @@
   button_list: 清單
   button_view: 檢視
   button_move: 移動
-  button_move_and_follow: 移動後跟隨
   button_back: 返回
   button_cancel: 取消
   button_activate: 啟用
@@ -849,23 +837,17 @@
   button_rename: 重新命名
   button_change_password: 變更密碼
   button_copy: 複製
-  button_copy_and_follow: 複製後跟隨
   button_annotate: 註解
   button_update: 更新
   button_configure: 設定
   button_quote: 引用
-  button_duplicate: 重製
   
   status_active: 活動中
   status_registered: 註冊完成
   status_locked: 鎖定中
-  
-  version_status_open: 進行中
-  version_status_locked: 已鎖定
-  version_status_closed: 已結束
-  
+
   field_active: 活動中
-  
+
   text_select_mail_notifications: 選擇欲寄送提醒通知郵件之動作
   text_regexp_info: eg. ^[A-Z0-9]+$
   text_min_max_length_info: 0 代表「不限制」
@@ -946,15 +928,3 @@
   enumeration_doc_categories: 文件分類
   enumeration_activities: 活動 (時間追蹤)
   enumeration_system_activity: 系統活動
-  label_copy_source: Source
-  setting_issue_done_ratio: Calculate the issue done ratio with
-  setting_issue_done_ratio_issue_status: Use the issue status
-  error_issue_done_ratios_not_updated: Issue done ratios not updated.
-  error_workflow_copy_target: Please select target tracker(s) and role(s)
-  setting_issue_done_ratio_issue_field: Use the issue field
-  label_copy_same_as_target: Same as target
-  label_copy_target: Target
-  notice_issue_done_ratios_updated: Issue done ratios updated.
-  setting_start_of_week: Start calendars on
-  error_workflow_copy_source: Please select a source tracker or role
-  label_update_issue_done_ratios: Update issue done ratios

@@ -319,6 +319,7 @@ ru:
   field_is_default: Значение по умолчанию
   field_is_filter: Используется в качестве фильтра
   field_is_for_all: Для всех проектов
+  field_is_in_chlog: Задачи, отображаемые в журнале изменений
   field_is_in_roadmap: Задачи, отображаемые в оперативном плане
   field_is_public: Общедоступный
   field_is_required: Обязательное
@@ -419,6 +420,7 @@ ru:
   label_calendar: Календарь
   label_calendar_filter: Включая
   label_calendar_no_assigned: не мои
+  label_change_log: Журнал изменений
   label_change_plural: Правки
   label_change_properties: Изменить свойства
   label_change_status: Изменить статус
@@ -503,6 +505,7 @@ ru:
   label_incoming_emails: Приём сообщений
   label_index_by_date: История страниц
   label_index_by_title: Оглавление
+  label_index_by_category: Index by category
   label_information_plural: Информация
   label_information: Информация
   label_in_less_than: менее чем
@@ -699,7 +702,6 @@ ru:
   label_wiki_page_plural: Страницы Wiki
   label_wiki_category: Category
   label_wiki_category_plural: Categories
-  label_wiki_index_by_category: Index by category
   label_special: Special
   label_pages_without_category: Pages without category
   label_workflow: Последовательность действий
@@ -940,36 +942,7 @@ ru:
   label_group: Группа
   label_group_new: Новая группа
   label_time_entry_plural: Затраченное время
-  text_journal_added: "{{label}} {{value}} добавлен"
-  field_active: Активно
-  enumeration_system_activity: Системная активность
-  permission_delete_issue_watchers: Удалить наблюдателей
-  version_status_closed: закрыт
-  version_status_locked: заблокирован
-  version_status_open: открыт
-  error_can_not_reopen_issue_on_closed_version: Задача, назначенная к закрытой версии, не сможет быть открыта снова
-  label_user_anonymous: Аноним
-  button_move_and_follow: Переместить и перейти
-  setting_default_projects_modules: Включенные по умолчанию модули для новых проектов
-  setting_gravatar_default: Изображение Gravatar по умолчанию
-  field_sharing: Совместное использование
-  label_version_sharing_hierarchy: С иерархией проектов
-  label_version_sharing_system: Со всеми проектами
-  label_version_sharing_descendants: С подпроектами
-  label_version_sharing_tree: С деревом проектов
-  label_version_sharing_none: Без совместного использования
-  error_can_not_archive_project: Этот проект не может быть архивирован
-  button_duplicate: Дублировать
-  button_copy_and_follow: Копировать и продолжить
-  label_copy_source: Источник
-  setting_issue_done_ratio: Calculate the issue done ratio with
-  setting_issue_done_ratio_issue_status: Use the issue status
-  error_issue_done_ratios_not_updated: Issue done ratios not updated.
-  error_workflow_copy_target: Выберите целевые трекеры и роли
-  setting_issue_done_ratio_issue_field: Use the issue field
-  label_copy_same_as_target: То же, что и у цели
-  label_copy_target: Цель
-  notice_issue_done_ratios_updated: Issue done ratios updated.
-  error_workflow_copy_source: Выберите исходный трекер или роль
-  label_update_issue_done_ratios: Update issue done ratios
-  setting_start_of_week: Start calendars on
+  text_journal_added: "{{label}} {{value}} added"
+  field_active: Active
+  enumeration_system_activity: System Activity
+  permission_delete_issue_watchers: Delete watchers

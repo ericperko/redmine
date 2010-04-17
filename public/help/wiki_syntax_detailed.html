@@ -206,7 +206,7 @@ To go live, all you need to add is a database and a web server.
 <pre>
 {{toc}} => left aligned toc
 {{>toc}} => right aligned toc
-</pre>
+</pre>    
 
     <h2><a name="12" class="wiki-page"></a>Macros</h2>
 
@@ -243,5 +243,33 @@ To go live, all you need to add is a database and a web server.
 <span class="no"><strong>10</strong></span> <span class="r">end</span>
 </code>
 </pre>
+
+    <h2><a name="14" class="wiki-page"></a>Page Categories</h2>
+    
+    <p>To assign a page to one or more page categories, insert either of the following anywhere
+    on the page:</p>
+
+<pre>
+{{cagetory(My Category)}}
+{{categories(My Category 1, My Category 2)}}
+</pre>
+
+    <p>The above macros don't output anything, but if a page is assigned to one or more page
+    categories, they are listed in the sidebar. Furthermore, these pages can be accessed using
+    the "Index by category" in the sidebar.</p>
+    
+    <p>You can insert a link to a specific page category. Follow this link to get a list of all
+    pages assigned to that page category.</p>
+
+<pre>
+[[category:My Category]]
+</pre>
+
+    <p>Or you can insert a list of pages assigned to a specific page category:</p>
+
+<pre>
+{{pages_in_category(My Category)}}
+</pre>
+
 </body>
 </html>

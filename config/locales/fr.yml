@@ -623,11 +623,11 @@ fr:
   label_wiki_page_plural: Pages wiki
   label_wiki_category: Catégorie
   label_wiki_category_plural: Catégories
-  label_label_index_by_category: Index par catégorie
   label_special: Spécial
   label_pages_without_category: Pages sans catégorie
   label_index_by_title: Index par titre
   label_index_by_date: Index par date
+  label_index_by_category: Index par catégorie
   label_current_version: Version actuelle
   label_preview: Prévisualisation
   label_feed_plural: Flux RSS

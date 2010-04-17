@@ -180,7 +180,7 @@ class WikiController < ApplicationController
       @pages = @wiki.pages.find :all, :order => 'title'
       export = render_to_string :action => 'export_multiple', :layout => false
       send_data(export, :type => 'text/html', :filename => "wiki.html")
-      return
+      return      
     when 'category'
       @category = params[:category].gsub(/_/, ' ')
       @pages = @wiki.find_pages_in_category(@category)

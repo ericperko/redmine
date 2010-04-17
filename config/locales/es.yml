@@ -460,6 +460,7 @@ es:
   label_incoming_emails: Correos entrantes
   label_index_by_date: Índice por fecha
   label_index_by_title: Índice por título
+  label_index_by_category: Índice por categoría
   label_information: Información
   label_information_plural: Información
   label_integer: Número
@@ -647,7 +648,6 @@ es:
   label_wiki_page_plural: Wiki páginas
   label_wiki_category: Categoría
   label_wiki_category_plural: Categorías
-  label_index_by_category: Índice por categoría
   label_special: Especial
   label_pages_without_category: Páginas sin categoría
   label_workflow: Flujo de trabajo

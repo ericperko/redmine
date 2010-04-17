@@ -241,6 +241,7 @@ pl:
   field_is_default: Domyślny status
   field_is_filter: Atrybut filtrowania
   field_is_for_all: Dla wszystkich projektów
+  field_is_in_chlog: Zagadnienie pokazywane w zapisie zmian
   field_is_in_roadmap: Zagadnienie pokazywane na mapie
   field_is_public: Publiczny
   field_is_required: Wymagane
@@ -336,6 +337,7 @@ pl:
   label_browse: Przegląd
   label_bulk_edit_selected_issues: Zbiorowa edycja zagadnień
   label_calendar: Kalendarz
+  label_change_log: Lista zmian
   label_change_plural: Zmiany
   label_change_properties: Zmień właściwości
   label_change_status: Status zmian
@@ -435,6 +437,7 @@ pl:
   label_incoming_emails: Przychodząca poczta elektroniczna
   label_index_by_date: Indeks wg daty
   label_index_by_title: Indeks
+  label_index_by_category: Index by category
   label_information: Informacja
   label_information_plural: Informacje
   label_integer: Liczba całkowita
@@ -626,7 +629,6 @@ pl:
   label_wiki_page_plural: Strony wiki
   label_wiki_category: Category
   label_wiki_category_plural: Categories
-  label_wiki_index_by_category: Index by category
   label_special: Special
   label_pages_without_category: Pages without category
   label_workflow: Przepływ
@@ -859,32 +861,3 @@ pl:
   field_active: Aktywne
   enumeration_system_activity: Aktywność Systemowa
   permission_delete_issue_watchers: Delete watchers
-  version_status_closed: closed
-  version_status_locked: locked
-  version_status_open: open
-  error_can_not_reopen_issue_on_closed_version: An issue assigned to a closed version can not be reopened
-  label_user_anonymous: Anonymous
-  button_move_and_follow: Move and follow
-  setting_default_projects_modules: Default enabled modules for new projects
-  setting_gravatar_default: Default Gravatar image
-  field_sharing: Sharing
-  label_version_sharing_hierarchy: With project hierarchy
-  label_version_sharing_system: With all projects
-  label_version_sharing_descendants: With subprojects
-  label_version_sharing_tree: With project tree
-  label_version_sharing_none: Not shared
-  error_can_not_archive_project: This project can not be archived
-  button_duplicate: Duplicate
-  button_copy_and_follow: Copy and follow
-  label_copy_source: Source
-  setting_issue_done_ratio: Calculate the issue done ratio with
-  setting_issue_done_ratio_issue_status: Use the issue status
-  error_issue_done_ratios_not_updated: Issue done ratios not updated.
-  error_workflow_copy_target: Please select target tracker(s) and role(s)
-  setting_issue_done_ratio_issue_field: Use the issue field
-  label_copy_same_as_target: Same as target
-  label_copy_target: Target
-  notice_issue_done_ratios_updated: Issue done ratios updated.
-  error_workflow_copy_source: Please select a source tracker or role
-  label_update_issue_done_ratios: Update issue done ratios
-  setting_start_of_week: Start calendars on

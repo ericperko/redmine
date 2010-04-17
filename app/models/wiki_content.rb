@@ -24,6 +24,8 @@ class WikiContent < ActiveRecord::Base
   validates_presence_of :text
   validates_length_of :comments, :maximum => 255, :allow_nil => true
 
+  acts_as_versioned
+
   def after_save
     page.categories = categories.join('|')
     page.categories = '|' + page.categories + '|' if !categories.empty? 
@@ -37,8 +39,6 @@ class WikiContent < ActiveRecord::Base
       []
     end
   end
-
-  acts_as_versioned
   
   def visible?(user=User.current)
     page.visible?(user)
@@ -46,6 +46,14 @@ class WikiContent < ActiveRecord::Base
     
   def project
     page.project
+  end
+
+  def categories
+    if text.match(/\{\{categor(?:y|ies)\((.+?)\)\}\}/)
+      $1.split(/\s*,\s*/).map { |c| Wiki.upcase_first(c) }
+    else
+      []
+    end
   end
   
   # Returns the mail adresses of users that should be notified
